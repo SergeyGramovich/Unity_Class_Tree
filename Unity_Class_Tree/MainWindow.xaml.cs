@@ -26,7 +26,6 @@ namespace Unity_Class_Tree
         {
             InitializeComponent();
             CreateNewClass();
-
         }
 
         public void CreateNewClass()
