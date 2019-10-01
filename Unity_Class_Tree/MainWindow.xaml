@@ -8,7 +8,7 @@
         Title="MainWindow" Height="1080" Width="1920" FontSize="10" FontFamily="Tahoma">
     <Grid>
         <Canvas Name="canvas" Background="#b2b2b2">
-            <!--<Grid x:Name="G1"  Background="Transparent" Width="1000" Height="600" MouseLeftButtonDown="GridMouseLeftButtonDown"
+            <!--<Grid x:Name="G1"  Background="Transparent" Width="1500" Height="600" MouseLeftButtonDown="GridMouseLeftButtonDown"
                         MouseLeftButtonUp="GridMouseLeftButtonUp" MouseMove="GridMouseMove" >
                 <Border x:Name="B1" Width="400" Height="109" Background="#6c6c6d" CornerRadius="6" VerticalAlignment="Center" 
                     BorderBrush="#595959" BorderThickness="2" ></Border>
@@ -29,9 +29,9 @@
                        BorderThickness="1" TextAlignment="Center" FontSize="9" Margin="0,0,0,250" 
                        TextWrapping="Wrap" BorderBrush="#797878">className</TextBox>
 
-                -->
-            <!--Right (Own)-->
-            <!--
+                
+            --><!--Right (Own)--><!--
+            
 
                 <CheckBox Width="16" Height="16" Margin="320,0,0,88"></CheckBox>
                 <Button Width="60" Height="16" Background="White" BorderThickness="2" Margin="400,0,0,88" 
@@ -108,9 +108,9 @@
                        BorderThickness="1" TextAlignment="Center" FontSize="9" Margin="730,214,0,0" 
                        TextWrapping="Wrap" BorderBrush="#797878">className</TextBox>
 
-                -->
-            <!--Left (Inherited)-->
-            <!--
+                
+            --><!--Left (Inherited)--><!--
+            
 
                 <CheckBox Width="16" Height="16" Margin="0,0,320,88"></CheckBox>
                 <Button Width="60" Height="16" Background="White" BorderThickness="2" Margin="0,0,400,88" 
