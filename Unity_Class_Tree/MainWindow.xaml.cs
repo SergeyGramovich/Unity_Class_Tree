@@ -20,8 +20,10 @@ namespace Unity_Class_Tree
     public partial class MainWindow : Window
     {
         Grid TakeClassGrid;
+        Point mousePosClassCanvasOld = new Point(0, 0);
         Point mousePosCanvasOld = new Point(0, 0);
-        public bool GetMouseElement = false;
+        public bool GetMouseClass = false;
+        public bool GetMouseCanvas = false;
         public MainWindow()
         {
             InitializeComponent();
@@ -235,38 +237,70 @@ namespace Unity_Class_Tree
         }
 
         // Реализация перемещения мышкой UIClass-а
-        private void GridMouseLeftButtonDown(object sender, MouseButtonEventArgs e) // Когда кнопка мыши нажата вниз, может работать событие GridMouseMove (перемещение классов по холсту)
+        private void GridMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if(e.OriginalSource.GetType().ToString() == "System.Windows.Controls.Grid") // Код ниже сработает, если событие было вызвано по нажатию на родительский элемент (т.е. Grid), а не по нажатию на его дочерние элементы
             {
                 TakeClassGrid = sender as Grid;
-                GetMouseElement = true;
+                GetMouseClass = true;
                 Mouse.Capture(TakeClassGrid);
-                mousePosCanvasOld = e.GetPosition(canvas);
+                mousePosClassCanvasOld = e.GetPosition(canvas);
             }
         }
         private void GridMouseMove(object sender, MouseEventArgs e) // Само перемещение классов по холсту
         {
-            if (GetMouseElement)
+            if (GetMouseClass)
             {
-                Point mousePosCanvasNew = e.GetPosition(canvas);
+                Point mousePosClassCanvasNew = e.GetPosition(canvas);
                 Point CanvasElement = new Point((double)TakeClassGrid.GetValue(Canvas.LeftProperty), (double)TakeClassGrid.GetValue(Canvas.TopProperty));
-                Canvas.SetLeft(TakeClassGrid, CanvasElement.X + (mousePosCanvasNew.X - mousePosCanvasOld.X));
-                Canvas.SetTop(TakeClassGrid, CanvasElement.Y + (mousePosCanvasNew.Y - mousePosCanvasOld.Y));
+                Canvas.SetLeft(TakeClassGrid, CanvasElement.X + (mousePosClassCanvasNew.X - mousePosClassCanvasOld.X));
+                Canvas.SetTop(TakeClassGrid, CanvasElement.Y + (mousePosClassCanvasNew.Y - mousePosClassCanvasOld.Y));
+                mousePosClassCanvasOld.X = mousePosClassCanvasNew.X;
+                mousePosClassCanvasOld.Y = mousePosClassCanvasNew.Y;
+            }
+        }
+        private void GridMouseLeftButtonUp(object sender, MouseButtonEventArgs e) // Когда кнопка мыши отпущена, перемещение классов по холсту прекращается
+        {
+            if (TakeClassGrid != null)
+            {
+                GetMouseClass = false;
+                TakeClassGrid.ReleaseMouseCapture();
+                mousePosClassCanvasOld = new Point(0, 0);
+                TakeClassGrid = null;
+            }
+        }
+
+        // Реализация перемещения мышкой холста (canvas)
+        private void canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.OriginalSource.GetType().ToString() == "System.Windows.Controls.Canvas") // Код ниже сработает, если событие было вызвано по нажатию на холст (canvas)
+            {
+                GetMouseCanvas = true;
+                mousePosCanvasOld = e.GetPosition(W1);
+            }
+        }
+        private void canvas_MouseMove(object sender, MouseEventArgs e) // Само перемещение холста (canvas) по ScrollViewer
+        {
+            
+            if (GetMouseCanvas)
+            {
+                Point mousePosCanvasNew = e.GetPosition(W1);
+                ScrollViewer1.ScrollToHorizontalOffset(ScrollViewer1.HorizontalOffset - (mousePosCanvasNew.X - mousePosCanvasOld.X));
+                ScrollViewer1.ScrollToVerticalOffset(ScrollViewer1.VerticalOffset - (mousePosCanvasNew.Y - mousePosCanvasOld.Y));
                 mousePosCanvasOld.X = mousePosCanvasNew.X;
                 mousePosCanvasOld.Y = mousePosCanvasNew.Y;
             }
         }
-        private void GridMouseLeftButtonUp(object sender, MouseButtonEventArgs e) // Когда кнопка мыши отпущена, перемещение прекращается
+        private void canvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) // Когда кнопка мыши отпущена, перемещение холста прекращается
         {
-            if (TakeClassGrid != null)
-            {
-                GetMouseElement = false;
-                TakeClassGrid.ReleaseMouseCapture();
-                mousePosCanvasOld = new Point(0, 0);
-                TakeClassGrid = null;
-            }
+            GetMouseCanvas = false;
         }
+
+
+
+
+
+
 
 
 

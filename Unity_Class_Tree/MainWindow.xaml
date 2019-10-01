@@ -5,10 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Unity_Class_Tree"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1080" Width="1920" FontSize="10" FontFamily="Tahoma">
+        Title="MainWindow" Height="1080" Width="1920" FontSize="10" FontFamily="Tahoma" Name="W1">
     <Grid>
-        <Canvas Name="canvas" Background="#b2b2b2">
-            <!--<Grid x:Name="G1"  Background="#6c6c6d" Width="400" Height="110" MouseLeftButtonDown="GridMouseLeftButtonDown"
+
+
+            <ScrollViewer x:Name="ScrollViewer1" HorizontalAlignment="Left" Visibility="Visible" VerticalScrollBarVisibility="Auto" 
+                      HorizontalScrollBarVisibility="Auto">
+            <Canvas Name="canvas" Background="#b2b2b2" Width="10000" Height="10000" MouseLeftButtonDown="canvas_MouseLeftButtonDown"
+                    MouseLeftButtonUp="canvas_MouseLeftButtonUp" MouseMove="canvas_MouseMove">
+
+
+                <!--<Grid x:Name="G1"  Background="#6c6c6d" Width="400" Height="110" MouseLeftButtonDown="GridMouseLeftButtonDown"
                         MouseLeftButtonUp="GridMouseLeftButtonUp" MouseMove="GridMouseMove" Canvas.Left="314" Canvas.Top="254" >
 
                 <Border Width="300" Height="50" BorderThickness="2" BorderBrush="#414141" Margin="0,0,0,20"
@@ -28,7 +35,9 @@
                        TextWrapping="Wrap" BorderBrush="#797878">className</TextBox>
 
 
-                --><!--Right (Own)--><!--
+                -->
+                <!--Right (Own)-->
+                <!--
 
 
                 <CheckBox Width="16" Height="16" Margin="320,0,0,88"></CheckBox>
@@ -107,7 +116,9 @@
                        TextWrapping="Wrap" BorderBrush="#797878">className</TextBox>
 
 
-                --><!--Left (Inherited)--><!--
+                -->
+                <!--Left (Inherited)-->
+                <!--
 
 
                 <CheckBox Width="16" Height="16" Margin="0,0,320,88"></CheckBox>
@@ -156,10 +167,11 @@
             </Grid>
             <RichTextBox FontSize="9"></RichTextBox>-->
 
-            <!--<Button Width="200" Height="100" Click="ChangeTextColorButton">Color</Button>
+                <!--<Button Width="200" Height="100" Click="ChangeTextColorButton">Color</Button>
             <Button VerticalAlignment="Bottom" Width="200" Height="100" Click="ChangeTextSizeButton">TextSize</Button>-->
+            </Canvas>
+        </ScrollViewer>
 
-        </Canvas>
 
     </Grid>
 </Window>
