@@ -35,20 +35,19 @@ namespace Unity_Class_Tree
             UIClass uIClass = new UIClass();
 
             // classGrid
-            uIClass.classGrid = new Grid { Background = Brushes.Black, Width = 1000, Height = 600};
+            uIClass.classGrid = new Grid { Width = 400, Height = 109, Background = new SolidColorBrush(Color.FromRgb(108, 108, 109)), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center};
             uIClass.classGrid.MouseLeftButtonDown += GridMouseLeftButtonDown;
             uIClass.classGrid.MouseLeftButtonUp += GridMouseLeftButtonUp;
             uIClass.classGrid.MouseMove += GridMouseMove;
             // classBorders
-            uIClass.classBorderGray = new Border { Width = 400, Height = 109, Background = new SolidColorBrush(Color.FromRgb(108, 108, 109)), CornerRadius = new CornerRadius(6), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, BorderBrush = new SolidColorBrush(Color.FromRgb(89, 89, 89)), BorderThickness = new Thickness(2) };
-            uIClass.classBorderWhite = new Border { Width = 300, Height = 50, Background = new SolidColorBrush(Colors.White), CornerRadius = new CornerRadius(6), VerticalAlignment = VerticalAlignment.Center, BorderBrush = new SolidColorBrush(Color.FromRgb(65, 65, 65)), BorderThickness = new Thickness(2), Margin = new Thickness(0, 0, 0, 22) };
+            uIClass.classBorderWhite = new Border { Name = "classBorderWhite", Width = 300, Height = 50, Background = new SolidColorBrush(Colors.White), CornerRadius = new CornerRadius(6), VerticalAlignment = VerticalAlignment.Center, BorderBrush = new SolidColorBrush(Color.FromRgb(65, 65, 65)), BorderThickness = new Thickness(2), Margin = new Thickness(0, 0, 0, 22) };
             // classDescriptionButton
             uIClass.classDescriptionButton = new Button { Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), Foreground = new SolidColorBrush(Color.FromRgb(43, 175, 62)), BorderBrush = new SolidColorBrush(Color.FromRgb(65, 65, 65)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(0, 0, 0, 88), Content = "???" };
             uIClass.classDescriptionButton.Click += OpenHideClassDescriptionTextBoxMethod;
             // 2 classTextboxes
-            uIClass.classNameTextBox = new TextBox { Name = "classNameTextBox", Width = 200, FontSize = 14, VerticalAlignment = VerticalAlignment.Center, TextAlignment = TextAlignment.Center, Foreground = new SolidColorBrush(Color.FromRgb(43, 145, 175)), BorderThickness = new Thickness(0), Margin = new Thickness(0, 0, 0, 22) };
-            uIClass.classDescriptionTextBox = new TextBox { Name = "classDescriptionTextBox", Width = 296, Height = 140, FontSize = 9, VerticalAlignment = VerticalAlignment.Center, TextAlignment = TextAlignment.Center, TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(0, 0, 0, 252), Visibility = Visibility.Collapsed };
-
+            uIClass.classNameTextBox = new TextBox { Name = "classNameTextBox", Width = 296, FontSize = 19, VerticalAlignment = VerticalAlignment.Center, TextAlignment = TextAlignment.Center, Foreground = new SolidColorBrush(Color.FromRgb(43, 145, 175)), BorderThickness = new Thickness(0), Margin = new Thickness(0, 0, 0, 22) };
+            uIClass.classDescriptionTextBox = new TextBox { FontFamily = new FontFamily("Calibri"), Name = "classDescriptionTextBox", Width = 296, Height = 140, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, TextAlignment = TextAlignment.Center, TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(52, -140, 52, 110), Visibility = Visibility.Collapsed };
+            
             // Right
 
             // Right A
@@ -57,9 +56,9 @@ namespace Unity_Class_Tree
             Grid rightAButtonContentGrid = new Grid();
             rightAButtonContentGrid.Children.Add(new TextBlock { Foreground = new SolidColorBrush(Color.FromRgb(40, 80, 252)), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 10, 0), Text = "int" });
             rightAButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "a" });
-            uIClass.rightAButton = new Button { Name = "rightA", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(400, 0, 0, 88), Content = rightAButtonContentGrid };
+            uIClass.rightAButton = new Button { Name = "rightA", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(370, 3, -30, 91), Content = rightAButtonContentGrid };
             uIClass.rightAButton.Click += OpenHideRichTextBoxesMethod;
-            uIClass.rightARichTextBox = new RichTextBox { FontFamily = new FontFamily("Calibri"), Name = "rightARichTextBox", Width = 270, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(730, 158, 0, 0), Visibility = Visibility.Collapsed, FontStyle = FontStyles.Normal };
+            uIClass.rightARichTextBox = new RichTextBox { FontFamily = new FontFamily("Calibri"), Name = "rightARichTextBox", Width = 400, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -120, -430, -278), Visibility = Visibility.Collapsed, FontStyle = FontStyles.Normal };
             uIClass.rightARichTextBox.LostFocus += RichTextBox_LostFocus;
             uIClass.rightARichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
             //FlowDocument flowDocument = new FlowDocument(); // FlowDocument, чтобы потом в него добавить Paragraph
@@ -72,9 +71,9 @@ namespace Unity_Class_Tree
             Grid rightStaticAButtonContentGrid = new Grid();
             rightStaticAButtonContentGrid.Children.Add(new TextBlock { Foreground = new SolidColorBrush(Color.FromRgb(40, 80, 252)), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 10, 0), Text = "static int" });
             rightStaticAButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "a" });
-            uIClass.rightStaticAButton = new Button { Name = "rightStaticA", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(400, 0, 0, 56), Content = rightStaticAButtonContentGrid };
+            uIClass.rightStaticAButton = new Button { Name = "rightStaticA", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(370, 19, -30, 75), Content = rightStaticAButtonContentGrid };
             uIClass.rightStaticAButton.Click += OpenHideRichTextBoxesMethod;
-            uIClass.rightStaticARichTextBox = new RichTextBox { Name = "rightStaticARichTextBox", Width = 270, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(730, 190, 0, 0), Visibility = Visibility.Collapsed };
+            uIClass.rightStaticARichTextBox = new RichTextBox { Name = "rightStaticARichTextBox", Width = 400, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -110, -430, -300), Visibility = Visibility.Collapsed };
             uIClass.rightStaticARichTextBox.LostFocus += RichTextBox_LostFocus;
             uIClass.rightStaticARichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
             // right Constr
@@ -82,9 +81,9 @@ namespace Unity_Class_Tree
             uIClass.rightConstrCheckBox.Click += OpenHideButtonsMethod;
             Grid rightConstrButtonContentGrid = new Grid();            
             rightConstrButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "Constr()" });
-            uIClass.rightConstrButton = new Button { Name = "rightConstr", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(400, 0, 0, 18), Content = rightConstrButtonContentGrid };
+            uIClass.rightConstrButton = new Button { Name = "rightConstr", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(370, 38, -30, 56), Content = rightConstrButtonContentGrid };
             uIClass.rightConstrButton.Click += OpenHideRichTextBoxesMethod;
-            uIClass.rightConstrRichTextBox = new RichTextBox { Name = "rightConstrRichTextBox", Width = 270, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(730, 228, 0, 0), Visibility = Visibility.Collapsed };
+            uIClass.rightConstrRichTextBox = new RichTextBox { Name = "rightConstrRichTextBox", Width = 400, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -90, -430, -318), Visibility = Visibility.Collapsed };
             uIClass.rightConstrRichTextBox.LostFocus += RichTextBox_LostFocus;
             uIClass.rightConstrRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
             // right Meth
@@ -92,9 +91,9 @@ namespace Unity_Class_Tree
             uIClass.rightMethCheckBox.Click += OpenHideButtonsMethod;
             Grid rightMethButtonContentGrid = new Grid();
             rightMethButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "Meth()" });
-            uIClass.rightMethButton = new Button { Name = "rightMeth", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(400, 20, 0, 0), Content = rightMethButtonContentGrid };
+            uIClass.rightMethButton = new Button { Name = "rightMeth", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(370, 57, -30, 37), Content = rightMethButtonContentGrid };
             uIClass.rightMethButton.Click += OpenHideRichTextBoxesMethod;
-            uIClass.rightMethRichTextBox = new RichTextBox { Name = "rightMethRichTextBox", Width = 270, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(730, 266, 0, 0), Visibility = Visibility.Collapsed };
+            uIClass.rightMethRichTextBox = new RichTextBox { Name = "rightMethRichTextBox", Width = 400, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -66, -430, -332), Visibility = Visibility.Collapsed };
             uIClass.rightMethRichTextBox.LostFocus += RichTextBox_LostFocus;
             uIClass.rightMethRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
             // right StaticMeth
@@ -103,9 +102,9 @@ namespace Unity_Class_Tree
             Grid rightStaticMethButtonContentGrid = new Grid();
             rightStaticMethButtonContentGrid.Children.Add(new TextBlock { Foreground = new SolidColorBrush(Color.FromRgb(40, 80, 252)), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 32, 0), Text = "static" });
             rightStaticMethButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "Meth()" });
-            uIClass.rightStaticMethButton = new Button { Name = "rightStaticMeth", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(400, 52, 0, 0), Content = rightStaticMethButtonContentGrid };
+            uIClass.rightStaticMethButton = new Button { Name = "rightStaticMeth", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(370, 73, -30, 21), Content = rightStaticMethButtonContentGrid };
             uIClass.rightStaticMethButton.Click += OpenHideRichTextBoxesMethod;
-            uIClass.rightStaticMethRichTextBox = new RichTextBox { Name = "rightStaticMethRichTextBox", Width = 270, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(730, 298, 0, 0), Visibility = Visibility.Collapsed };
+            uIClass.rightStaticMethRichTextBox = new RichTextBox { Name = "rightStaticMethRichTextBox", Width = 400, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -50, -430, -348), Visibility = Visibility.Collapsed };
             uIClass.rightStaticMethRichTextBox.LostFocus += RichTextBox_LostFocus;
             uIClass.rightStaticMethRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
             // right Message
@@ -113,9 +112,9 @@ namespace Unity_Class_Tree
             uIClass.rightMessageCheckBox.Click += OpenHideButtonsMethod;
             Grid rightMessageButtonContentGrid = new Grid();
             rightMessageButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "Message()" });
-            uIClass.rightMessageButton = new Button { Name = "rightMessage", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(400, 90, 0, 0), Content = rightMessageButtonContentGrid };
+            uIClass.rightMessageButton = new Button { Name = "rightMessage", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(370, 92, -30, 2), Content = rightMessageButtonContentGrid };
             uIClass.rightMessageButton.Click += OpenHideRichTextBoxesMethod;
-            uIClass.rightMessageRichTextBox = new RichTextBox { Name = "rightMessageRichTextBox", Width = 270, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(730, 336, 0, 0), Visibility = Visibility.Collapsed };
+            uIClass.rightMessageRichTextBox = new RichTextBox { Name = "rightMessageRichTextBox", Width = 400, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -30, -430, -366), Visibility = Visibility.Collapsed };
             uIClass.rightMessageRichTextBox.LostFocus += RichTextBox_LostFocus;
             uIClass.rightMessageRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
 
@@ -127,9 +126,9 @@ namespace Unity_Class_Tree
             Grid leftAButtonContentGrid = new Grid();
             leftAButtonContentGrid.Children.Add(new TextBlock { Foreground = new SolidColorBrush(Color.FromRgb(40, 80, 252)), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 10, 0), Text = "int" });
             leftAButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "a" });
-            uIClass.leftAButton = new Button { Name = "leftA", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(65,89, 196)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(0, 0, 400, 88), Content = leftAButtonContentGrid };
+            uIClass.leftAButton = new Button { Name = "leftA", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(65,89, 196)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(-30, 3, 370, 91), Content = leftAButtonContentGrid };
             uIClass.leftAButton.Click += OpenHideRichTextBoxesMethod;
-            uIClass.leftARichTextBox = new RichTextBox { Name = "leftARichTextBox", Width = 270, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(0, 158, 730, 0), Visibility = Visibility.Collapsed };
+            uIClass.leftARichTextBox = new RichTextBox { Name = "leftARichTextBox", Width = 400, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(-430, -120, 430, -278), Visibility = Visibility.Collapsed };
             uIClass.leftARichTextBox.LostFocus += RichTextBox_LostFocus;
             uIClass.leftARichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
             // RightACheckBox, RightAButton and RightARichTextBox
@@ -137,9 +136,9 @@ namespace Unity_Class_Tree
             uIClass.leftMethCheckBox.Click += OpenHideButtonsMethod;
             Grid leftMethButtonContentGrid = new Grid();
             leftMethButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "Meth()" });
-            uIClass.leftMethButton = new Button { Name = "leftMeth", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(65, 89, 196)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(0, 20, 400, 0), Content = leftMethButtonContentGrid };
+            uIClass.leftMethButton = new Button { Name = "leftMeth", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(65, 89, 196)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(-30, 57, 370, 37), Content = leftMethButtonContentGrid };
             uIClass.leftMethButton.Click += OpenHideRichTextBoxesMethod;
-            uIClass.leftMethRichTextBox = new RichTextBox { Name = "leftMethRichTextBox", Width = 270, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(0, 266, 730, 0), Visibility = Visibility.Collapsed };
+            uIClass.leftMethRichTextBox = new RichTextBox { Name = "leftMethRichTextBox", Width = 400, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(-430, -66, 430, -332), Visibility = Visibility.Collapsed };
             uIClass.leftMethRichTextBox.LostFocus += RichTextBox_LostFocus;
             uIClass.leftMethRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
             // RightACheckBox, RightAButton and RightARichTextBox
@@ -148,14 +147,13 @@ namespace Unity_Class_Tree
             Grid leftStaticMethButtonContentGrid = new Grid();
             leftStaticMethButtonContentGrid.Children.Add(new TextBlock { Foreground = new SolidColorBrush(Color.FromRgb(40, 80, 252)), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 32, 0), Text = "static" });
             leftStaticMethButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "Meth()" });
-            uIClass.leftStaticMethButton = new Button { Name = "leftStaticMeth", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(65, 89, 196)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(0, 52, 400, 0), Content = leftStaticMethButtonContentGrid };
+            uIClass.leftStaticMethButton = new Button { Name = "leftStaticMeth", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(65, 89, 196)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(-30, 73, 370, 21), Content = leftStaticMethButtonContentGrid };
             uIClass.leftStaticMethButton.Click += OpenHideRichTextBoxesMethod;
-            uIClass.leftStaticMethRichTextBox = new RichTextBox { Name = "leftStaticMethRichTextBox", Width = 270, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(0, 298, 730, 0), Visibility = Visibility.Collapsed };
+            uIClass.leftStaticMethRichTextBox = new RichTextBox { Name = "leftStaticMethRichTextBox", Width = 400, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(-430, -50, 430, -348), Visibility = Visibility.Collapsed };
             uIClass.leftStaticMethRichTextBox.LostFocus += RichTextBox_LostFocus;
             uIClass.leftStaticMethRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
 
             // Adding elements to classGrid
-            uIClass.classGrid.Children.Add(uIClass.classBorderGray);
             uIClass.classGrid.Children.Add(uIClass.classBorderWhite);
             uIClass.classGrid.Children.Add(uIClass.classDescriptionButton);
             uIClass.classGrid.Children.Add(uIClass.classNameTextBox);
@@ -200,7 +198,6 @@ namespace Unity_Class_Tree
 
 
         }
-
         private void OpenHideClassDescriptionTextBoxMethod(object sender, RoutedEventArgs e) // Makes ClassDescriptionTextBox Visible when classDescriptionButton is pressed
         {
             TextBox[] textBoxes = ((sender as Button).Parent as Grid).Children.OfType<TextBox>().ToArray();
@@ -236,29 +233,17 @@ namespace Unity_Class_Tree
                 a++;
             }
         }
-        private void RichTextBox_LostFocus(object sender, RoutedEventArgs e) //
-        {
-            //rtb = richTextBox;
-            Paragraph paragraph = (sender as RichTextBox).Document.Blocks.FirstBlock as Paragraph; // Получение всех Inline-ов выделенного RichTextBox-а
-            foreach (Inline i in paragraph.Inlines)
-            {
-                MessageBox.Show(i.ToString() + "___" + new TextRange(i.ContentStart, i.ContentEnd).Text + " " + i.FontWeight + " " + i.Foreground);
-            }
-        }
-
-
-
-
-
-
 
         // Реализация перемещения мышкой UIClass-а
         private void GridMouseLeftButtonDown(object sender, MouseButtonEventArgs e) // Когда кнопка мыши нажата вниз, может работать событие GridMouseMove (перемещение классов по холсту)
         {
-            TakeClassGrid = sender as Grid;
-            GetMouseElement = true;
-            Mouse.Capture(TakeClassGrid);
-            mousePosCanvasOld = e.GetPosition(canvas);
+            if(e.OriginalSource.GetType().ToString() == "System.Windows.Controls.Grid") // Код ниже сработает, если событие было вызвано по нажатию на родительский элемент (т.е. Grid), а не по нажатию на его дочерние элементы
+            {
+                TakeClassGrid = sender as Grid;
+                GetMouseElement = true;
+                Mouse.Capture(TakeClassGrid);
+                mousePosCanvasOld = e.GetPosition(canvas);
+            }
         }
         private void GridMouseMove(object sender, MouseEventArgs e) // Само перемещение классов по холсту
         {
@@ -274,16 +259,31 @@ namespace Unity_Class_Tree
         }
         private void GridMouseLeftButtonUp(object sender, MouseButtonEventArgs e) // Когда кнопка мыши отпущена, перемещение прекращается
         {
-            GetMouseElement = false;
-            TakeClassGrid.ReleaseMouseCapture();
-            mousePosCanvasOld = new Point(0, 0);
-            TakeClassGrid = null;
+            if (TakeClassGrid != null)
+            {
+                GetMouseElement = false;
+                TakeClassGrid.ReleaseMouseCapture();
+                mousePosCanvasOld = new Point(0, 0);
+                TakeClassGrid = null;
+            }
         }
 
 
 
 
 
+
+
+
+        private void RichTextBox_LostFocus(object sender, RoutedEventArgs e) //
+        {
+            //rtb = richTextBox;
+            Paragraph paragraph = (sender as RichTextBox).Document.Blocks.FirstBlock as Paragraph; // Получение всех Inline-ов выделенного RichTextBox-а
+            foreach (Inline i in paragraph.Inlines)
+            {
+                MessageBox.Show(i.ToString() + "___" + new TextRange(i.ContentStart, i.ContentEnd).Text + " " + i.FontWeight + " " + i.Foreground);
+            }
+        }
 
         private void ChangeTextColorButton(object sender, RoutedEventArgs e)
         {
@@ -370,9 +370,5 @@ namespace Unity_Class_Tree
             //}
             //MessageBox.Show(PropertyClassList.Count.ToString());
         }
-
-
-
-
     }
 }

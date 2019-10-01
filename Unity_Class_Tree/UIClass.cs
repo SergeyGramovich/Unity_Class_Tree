@@ -10,7 +10,6 @@ namespace Unity_Class_Tree
     class UIClass
     {
         public Grid classGrid;
-        public Border classBorderGray;
         public Border classBorderWhite;
         public TextBox classNameTextBox;
         public Button classDescriptionButton;
