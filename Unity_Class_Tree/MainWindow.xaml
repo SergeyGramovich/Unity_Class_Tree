@@ -174,19 +174,21 @@
         <Border Name="Menu" Width="340" Background="Transparent"   Margin="1572,0,0,0">
             <Grid>
                 <Grid Width="300" Background="#969797" HorizontalAlignment="Right">
-                    <Rectangle Width="300" Height="100" Fill="#767676" Margin="0,0,0,950"></Rectangle>
-                    <Button Width="50" Height="50" FontSize="12" Margin="0,0,180,950" Background="#01b8fc" Foreground="White">COLORS</Button>
-                    <TextBox Width="50" Height="50" FontSize="19" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                    <Rectangle Width="300" Height="120" Fill="#767676" Margin="0,0,0,940"></Rectangle>
+                    <Button Width="50" Height="50" FontSize="12" Margin="0,0,180,950" Background="#01b8fc" Foreground="White"
+                            Click="ChangeTextColorButton">COLORS</Button>
+                    <TextBox Name="FontSizeTextBox" Width="50" Height="50" FontSize="19" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                          Margin="100,0,0,950">14</TextBox>
-                    <Button Width="30" Height="30" FontSize="18" Margin="0,0,0,950" Background="White">-</Button>
-                    <Button Width="30" Height="30" FontSize="18" Margin="200,0,0,950" Background="White">+</Button>
+                    <Button Name="Apply" Width="50" Height="20" FontSize="14" Margin="100,0,0,878" Background="White" Click="ChangeTextSizeButtons">APPLY</Button>
+                    <Button Name="Minus" Width="30" Height="30" FontSize="18" Margin="0,0,0,950" Background="White" Click="ChangeTextSizeButtons">-</Button>
+                    <Button Name="Plus" Width="30" Height="30" FontSize="18" Margin="200,0,0,950" Background="White" Click="ChangeTextSizeButtons">+</Button>
 
-                    <Rectangle Width="300" Height="160" Fill="#767676" Margin="0,0,0,500"></Rectangle>
+                    <Rectangle Width="300" Height="160" Fill="#767676" Margin="0,0,0,480"></Rectangle>
                     <TextBox Name="NewClassNameTextBox" Width="290" Height="50" FontSize="19" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                         Margin="0,0,0,540" Foreground="#2b91af">NewClassName</TextBox>
-                    <Button Width="120" Height="30" FontSize="12" Margin="0,0,160,440" Background="#40d755" Foreground="White"
+                         Margin="0,0,0,520" Foreground="#2b91af">NewClassName</TextBox>
+                    <Button Width="120" Height="30" FontSize="12" Margin="0,0,160,420" Background="#40d755" Foreground="White"
                             Click="CreateNewClassButtonClick">CREATE NEW CLASS</Button>
-                    <Button Width="120" Height="30" FontSize="12" Margin="160,0,0,440" Background="#d74040" Foreground="White">DELETE CLASS</Button>
+                    <Button Width="120" Height="30" FontSize="12" Margin="160,0,0,420" Background="#d74040" Foreground="White">DELETE CLASS</Button>
 
                     <Rectangle Width="300" Height="400" Fill="#767676" Margin="0,300,0,0"></Rectangle>
                     <Button Width="120" Height="30" FontSize="12" Margin="0,0,0,0">Add First Class</Button>
