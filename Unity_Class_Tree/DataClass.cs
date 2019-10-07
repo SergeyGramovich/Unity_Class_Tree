@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace Unity_Class_Tree
 {
@@ -22,105 +23,105 @@ namespace Unity_Class_Tree
         // Right RichTextBoxes
 
         [DataMember]
-        public bool rightADataClassCheckBox { get; set; }
+        public bool rightADataClassCheckBox { get; set; } = true;
         [DataMember]
-        public List<string> rightAInlineTextFontWeight = new List<string>();
+        public List<bool> rightAInlineTextFontWeight = new List<bool>();
         [DataMember]
         public List<string> rightAInlineText = new List<string>();
         [DataMember]
         public List<int> rightAInlineTextFontSize = new List<int>();
         [DataMember]
-        public List<string> rightAInlineTextColor = new List<string>();
+        public List<Color> rightAInlineTextColor = new List<Color>();
 
         [DataMember]
-        public bool rightStaticADataClassCheckBox { get; set; }
+        public bool rightStaticADataClassCheckBox { get; set; } = true;
         [DataMember]
-        public List<string> rightStaticAInlineTextFontWeight = new List<string>();
+        public List<bool> rightStaticAInlineTextFontWeight = new List<bool>();
         [DataMember]
         public List<string> rightStaticAInlineText = new List<string>();
         [DataMember]
         public List<int> rightStaticAInlineTextFontSize = new List<int>();
         [DataMember]
-        public List<string> rightStaticAInlineTextColor = new List<string>();
+        public List<Color> rightStaticAInlineTextColor = new List<Color>();
 
         [DataMember]
-        public bool rightConstrDataClassCheckBox { get; set; }
+        public bool rightConstrDataClassCheckBox { get; set; } = true;
         [DataMember]
-        public List<string> rightConstrInlineTextFontWeight = new List<string>();
+        public List<bool> rightConstrInlineTextFontWeight = new List<bool>();
         [DataMember]
         public List<string> rightConstrInlineText = new List<string>();
         [DataMember]
         public List<int> rightConstrInlineTextFontSize = new List<int>();
         [DataMember]
-        public List<string> rightConstrInlineTextColor = new List<string>();
+        public List<Color> rightConstrInlineTextColor = new List<Color>();
 
         [DataMember]
-        public bool rightMethDataClassCheckBox { get; set; }
+        public bool rightMethDataClassCheckBox { get; set; } = true;
         [DataMember]
-        public List<string> rightMethInlineTextFontWeight = new List<string>();
+        public List<bool> rightMethInlineTextFontWeight = new List<bool>();
         [DataMember]
         public List<string> rightMethInlineText = new List<string>();
         [DataMember]
         public List<int> rightMethInlineTextFontSize = new List<int>();
         [DataMember]
-        public List<string> rightMethInlineTextColor = new List<string>();
+        public List<Color> rightMethInlineTextColor = new List<Color>();
 
         [DataMember]
-        public bool rightStaticMethDataClassCheckBox { get; set; }
+        public bool rightStaticMethDataClassCheckBox { get; set; } = true;
         [DataMember]
-        public List<string> rightStaticMethInlineTextFontWeight = new List<string>();
+        public List<bool> rightStaticMethInlineTextFontWeight = new List<bool>();
         [DataMember]
         public List<string> rightStaticMethInlineText = new List<string>();
         [DataMember]
         public List<int> rightStaticMethInlineTextFontSize = new List<int>();
         [DataMember]
-        public List<string> rightStaticMethInlineTextColor = new List<string>();
+        public List<Color> rightStaticMethInlineTextColor = new List<Color>();
 
         [DataMember]
-        public bool rightMessageDataClassCheckBox { get; set; }
+        public bool rightMessageDataClassCheckBox { get; set; } = true;
         [DataMember]
-        public List<string> rightMessageInlineTextFontWeight = new List<string>();
+        public List<bool> rightMessageInlineTextFontWeight = new List<bool>();
         [DataMember]
         public List<string> rightMessageInlineText = new List<string>();
         [DataMember]
         public List<int> rightMessageInlineTextFontSize = new List<int>();
         [DataMember]
-        public List<string> rightMessageInlineTextColor = new List<string>();
+        public List<Color> rightMessageInlineTextColor = new List<Color>();
 
         // Left RichTextBoxes
 
         [DataMember]
-        public bool leftADataClassCheckBox { get; set; }
+        public bool leftADataClassCheckBox { get; set; } = true;
         [DataMember]
-        public List<string> leftAInlineTextFontWeight = new List<string>();
+        public List<bool> leftAInlineTextFontWeight = new List<bool>();
         [DataMember]
         public List<string> leftAInlineText = new List<string>();
         [DataMember]
         public List<int> leftAInlineTextFontSize = new List<int>();
         [DataMember]
-        public List<string> leftAInlineTextColor = new List<string>();
+        public List<Color> leftAInlineTextColor = new List<Color>();
 
         [DataMember]
-        public bool leftMethDataClassCheckBox { get; set; }
+        public bool leftMethDataClassCheckBox { get; set; } = true;
         [DataMember]
-        public List<string> leftMethInlineTextFontWeight = new List<string>();
+        public List<bool> leftMethInlineTextFontWeight = new List<bool>();
         [DataMember]
         public List<string> leftMethInlineText = new List<string>();
         [DataMember]
         public List<int> leftMethInlineTextFontSize = new List<int>();
         [DataMember]
-        public List<string> leftMethInlineTextColor = new List<string>();
+        public List<Color> leftMethInlineTextColor = new List<Color>();
 
         [DataMember]
-        public bool leftStaticMethDataClassCheckBox { get; set; }
+        public bool leftStaticMethDataClassCheckBox { get; set; } = true;
         [DataMember]
-        public List<string> leftStaticMethInlineTextFontWeight = new List<string>();
+        public List<bool> leftStaticMethInlineTextFontWeight = new List<bool>();
         [DataMember]
         public List<string> leftStaticMethInlineText = new List<string>();
         [DataMember]
         public List<int> leftStaticMethInlineTextFontSize = new List<int>();
         [DataMember]
-        public List<string> leftStaticMethInlineTextColor = new List<string>();
+        public List<Color> leftStaticMethInlineTextColor = new List<Color>();
 
     }
 }

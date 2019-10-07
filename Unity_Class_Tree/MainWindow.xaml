@@ -12,163 +12,7 @@
         <ScrollViewer x:Name="ScrollViewer1" HorizontalAlignment="Left" Visibility="Visible" VerticalScrollBarVisibility="Auto" 
                       HorizontalScrollBarVisibility="Auto" Width="1916">
             <Canvas Name="canvas" Background="#b2b2b2" Width="10000" Height="10000" MouseLeftButtonDown="canvas_MouseLeftButtonDown"
-                    MouseLeftButtonUp="canvas_MouseLeftButtonUp" MouseMove="canvas_MouseMove">
-
-
-                <!--<Grid x:Name="G1"  Background="#6c6c6d" Width="400" Height="110" MouseLeftButtonDown="GridMouseLeftButtonDown"
-                        MouseLeftButtonUp="GridMouseLeftButtonUp" MouseMove="GridMouseMove" Canvas.Left="314" Canvas.Top="254" >
-
-                <Border Width="300" Height="50" BorderThickness="2" BorderBrush="#414141" Margin="0,0,0,20"
-                    Background="White" CornerRadius="6" VerticalAlignment="Center"></Border>
-
-                <TextBox VerticalAlignment="Center" Foreground="#2b91af" Width="296" BorderThickness="0"
-                       TextAlignment="Center" FontSize="14" Margin="0,0,0,22"
-                     >className</TextBox>
-
-                <Button Width="60" Height="16" Background="White" BorderThickness="2" Margin="0,0,0,90" 
-                    BorderBrush="#414141" VerticalAlignment="Center" Foreground="#2baf3e">???
-
-                </Button>
-
-                <TextBox VerticalAlignment="Center" Foreground="Black" Width="296" Height="140" 
-                       BorderThickness="1" TextAlignment="Center" FontSize="9" Margin="52,-142,52,112" 
-                       TextWrapping="Wrap" BorderBrush="#797878">className</TextBox>
-
-
-                -->
-                <!--Right (Own)-->
-                <!--
-
-
-                <CheckBox Width="16" Height="16" Margin="320,0,0,88"></CheckBox>
-                <Button Width="60" Height="16" Background="White" BorderThickness="2" Margin="370,3,-30,91" 
-                    BorderBrush="#2baf3e" VerticalAlignment="Center" VerticalContentAlignment="Top">a</Button>
-                <RichTextBox VerticalAlignment="Center" Foreground="Black" Width="270" Height="140" 
-                       BorderThickness="1" FontSize="9" Margin="430,4,-300,-34" 
-                       BorderBrush="#797878"></RichTextBox>
-
-                <CheckBox Width="16" Height="16" Margin="320,0,0,56"></CheckBox>
-                <Button Width="60" Height="16" Background="White" BorderThickness="2" Margin="370,19,-30,75" 
-                    BorderBrush="#2baf3e" VerticalAlignment="Center" Foreground="#2baf3e" >
-                    <Button.Content>
-                        <Grid>
-                            <TextBlock Foreground="#2850fc" HorizontalAlignment="Center" Margin="0,0,8,0"
-                                   VerticalAlignment="Bottom">static</TextBlock>
-                            <TextBlock Foreground="Black" HorizontalAlignment="Right" 
-                                   VerticalAlignment="Bottom">a</TextBlock>
-                        </Grid>
-                    </Button.Content>
-                </Button>
-                <TextBox VerticalAlignment="Center" Foreground="Black" Width="270" Height="140" 
-                       BorderThickness="1" TextAlignment="Center" FontSize="9" Margin="430,20,-300,-50" 
-                       TextWrapping="Wrap" BorderBrush="#797878">className</TextBox>
-
-                <CheckBox Width="16" Height="16" Margin="320,0,0,18"></CheckBox>
-                <Button Width="60" Height="16" Background="White" BorderThickness="2" Margin="370,38,-30,56" 
-                    BorderBrush="#2baf3e" VerticalAlignment="Center" Foreground="#2baf3e" >
-                    <Button.Content>
-                        <TextBlock Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                               >Constr()</TextBlock>
-                    </Button.Content>
-                </Button>
-                <TextBox VerticalAlignment="Center" Foreground="Black" Width="270" Height="140" 
-                       BorderThickness="1" TextAlignment="Center" FontSize="9" Margin="430,39,-300,-69" 
-                       TextWrapping="Wrap" BorderBrush="#797878">className</TextBox>
-
-                <CheckBox Width="16" Height="16" Margin="320,20,0,0"></CheckBox>
-                <Button Width="60" Height="16" Background="White" BorderThickness="2" Margin="370,57,-30,37" 
-                    BorderBrush="#2baf3e" VerticalAlignment="Center" Foreground="#2baf3e" >
-                    <Button.Content>
-                        <TextBlock Foreground="Black" HorizontalAlignment="Right" 
-                               VerticalAlignment="Bottom">Meth()</TextBlock>
-                    </Button.Content>
-                </Button>
-                <TextBox VerticalAlignment="Center" Foreground="Black" Width="270" Height="140" 
-                       BorderThickness="1" TextAlignment="Center" FontSize="9" Margin="430,57,-300,-87" 
-                       TextWrapping="Wrap" BorderBrush="#797878">className</TextBox>
-
-                <CheckBox Width="16" Height="16" Margin="320,52,0,0"></CheckBox>
-                <Button Width="60" Height="16" Background="White" BorderThickness="2" Margin="370,73,-30,21" 
-                    BorderBrush="#2baf3e" VerticalAlignment="Center" Foreground="#2baf3e" >
-                    <Button.Content>
-                        <Grid>
-                            <TextBlock Foreground="#2850fc" HorizontalAlignment="Center" Margin="0,0,32,0"
-                                   VerticalAlignment="Bottom">static</TextBlock>
-                            <TextBlock Foreground="Black" HorizontalAlignment="Right"
-                                   VerticalAlignment="Bottom">Meth()</TextBlock>
-                        </Grid>
-                    </Button.Content>
-                </Button>
-                <TextBox VerticalAlignment="Center" Foreground="Black" Width="270" Height="140" 
-                       BorderThickness="1" TextAlignment="Center" FontSize="9" Margin="430,74,-300,-104" 
-                       TextWrapping="Wrap" BorderBrush="#797878">className</TextBox>
-
-                <CheckBox Width="16" Height="16" Margin="320,90,0,0"></CheckBox>
-                <Button Width="60" Height="16" Background="White" BorderThickness="2" Margin="370,92,-30,2" 
-                    BorderBrush="#2baf3e" VerticalAlignment="Center" Foreground="#2baf3e" >
-                    <Button.Content>
-                        <TextBlock Foreground="Black" HorizontalAlignment="Right" 
-                               VerticalAlignment="Bottom">Message()</TextBlock>
-                    </Button.Content>
-                </Button>
-                <TextBox VerticalAlignment="Center" Foreground="Black" Width="270" Height="140" 
-                       BorderThickness="1" TextAlignment="Center" FontSize="9" Margin="430,93,-300,-123" 
-                       TextWrapping="Wrap" BorderBrush="#797878">className</TextBox>
-
-
-                -->
-                <!--Left (Inherited)-->
-                <!--
-
-
-                <CheckBox Width="16" Height="16" Margin="0,0,320,88"></CheckBox>
-                <Button Width="60" Height="16" Background="White" BorderThickness="2" Margin="-30,3,370,91" 
-                    BorderBrush="#5f72c6" VerticalAlignment="Center" Foreground="#2baf3e">
-                    <Button.Content>
-                        <Grid>
-                            <TextBlock Foreground="#2850fc" HorizontalAlignment="Left" Margin="0,0,10,0"
-                                   VerticalAlignment="Bottom">int</TextBlock>
-                            <TextBlock Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Bottom">a</TextBlock>
-                        </Grid>
-                    </Button.Content>
-                </Button>
-                <TextBox VerticalAlignment="Center" Foreground="Black" Width="270" Height="140" 
-                       BorderThickness="1" TextAlignment="Center" FontSize="9" Margin="-300,4,430,-34" 
-                       TextWrapping="Wrap" BorderBrush="#797878">className</TextBox>
-
-                <CheckBox Width="16" Height="16" Margin="0,20,320,0"></CheckBox>
-                <Button Width="60" Height="16" Background="White" BorderThickness="2" Margin="-30,57,370,37" 
-                    BorderBrush="#5f72c6" VerticalAlignment="Center" Foreground="#2baf3e" >
-                    <Button.Content>
-                        <TextBlock Foreground="Black" HorizontalAlignment="Right" 
-                               VerticalAlignment="Bottom">Meth()</TextBlock>
-                    </Button.Content>
-                </Button>
-                <TextBox VerticalAlignment="Center" Foreground="Black" Width="270" Height="140" 
-                       BorderThickness="1" TextAlignment="Center" FontSize="9" Margin="-300,58,430,-88" 
-                       TextWrapping="Wrap" BorderBrush="#797878">className</TextBox>
-
-                <CheckBox Width="16" Height="16" Margin="0,52,320,0"></CheckBox>
-                <Button Width="60" Height="16" Background="White" BorderThickness="2" Margin="-30,73,370,21" 
-                    BorderBrush="#5f72c6" VerticalAlignment="Center" Foreground="#2baf3e" >
-                    <Button.Content>
-                        <Grid>
-                            <TextBlock Foreground="#2850fc" HorizontalAlignment="Center" Margin="0,0,30,0"
-                                   VerticalAlignment="Bottom">static</TextBlock>
-                            <TextBlock Foreground="Black" HorizontalAlignment="Right" 
-                                   VerticalAlignment="Bottom">Meth()</TextBlock>
-                        </Grid>
-                    </Button.Content>
-                </Button>
-                <TextBox VerticalAlignment="Center" Foreground="Black" Width="270" Height="140" 
-                       BorderThickness="1" TextAlignment="Center" FontSize="9" Margin="-300,74,430,-104" 
-                       TextWrapping="Wrap" BorderBrush="#797878">className</TextBox>
-
-            </Grid>
-            <RichTextBox FontSize="9"></RichTextBox>-->
-
-                <!--<Button Width="200" Height="100" Click="ChangeTextColorButton">Color</Button>
-            <Button VerticalAlignment="Bottom" Width="200" Height="100" Click="ChangeTextSizeButton">TextSize</Button>-->
+                    MouseLeftButtonUp="canvas_MouseLeftButtonUp" MouseMove="canvas_MouseMove">               
             </Canvas>
         </ScrollViewer>
         <Border Name="Menu" Width="340" Background="Transparent"   Margin="1572,0,0,0">
@@ -187,8 +31,9 @@
                     <TextBox Name="NewClassNameTextBox" Width="290" Height="50" FontSize="19" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                          Margin="0,0,0,520" Foreground="#2b91af">NewClassName</TextBox>
                     <Button Width="120" Height="30" FontSize="12" Margin="0,0,160,420" Background="#40d755" Foreground="White"
-                            Click="CreateNewClassButtonClick">CREATE NEW CLASS</Button>
-                    <Button Width="120" Height="30" FontSize="12" Margin="160,0,0,420" Background="#d74040" Foreground="White">DELETE CLASS</Button>
+                            Click="CreateNewClass">CREATE NEW CLASS</Button>
+                    <Button Width="120" Height="30" FontSize="12" Margin="160,0,0,420" Background="#d74040" Foreground="White"
+                            Click="DeleteClass">DELETE CLASS</Button>
 
                     <Rectangle Width="300" Height="400" Fill="#767676" Margin="0,300,0,0"></Rectangle>
                     <Button Width="120" Height="30" FontSize="12" Margin="0,0,0,0">Add First Class</Button>
