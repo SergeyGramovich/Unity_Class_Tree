@@ -19,6 +19,8 @@ namespace Unity_Class_Tree
         public string classDescription { get; set; }
         [DataMember]
         public Point canvasPointClass { get; set; }
+        [DataMember]
+        public string parentClassNameForThis { get; set; } = null;
 
         // Right RichTextBoxes
 

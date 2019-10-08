@@ -19,13 +19,16 @@ namespace Unity_Class_Tree
 {
     public partial class MainWindow : Window
     {
-        DataClass dt;
         RichTextBox rtb;
         Grid TakeClassGrid;
+        Grid FirstClassGrid;
+        Grid SecondClassGrid;
         Point mousePosClassCanvasOld = new Point(0, 0);
         Point mousePosCanvasOld = new Point(0, 0);
         Point currentCanvasPointClass = new Point(0, 0);
         public string currentClassName = "";
+        public string classParentName = "";
+        public string nameOfParent = "";
         bool GetMouseClass = false;
         bool GetMouseCanvas = false;
         public MainWindow()
@@ -46,9 +49,16 @@ namespace Unity_Class_Tree
                     using (FileStream fs = new FileStream(s, FileMode.Open))
                     {
                         DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(DataClass));
-                        DataClass dataClass = (DataClass)jsonSerializer.ReadObject(fs);
-                        CreateNewClass(dataClass, e);
+                        try
+                        {
+                            DataClass dataClass = (DataClass)jsonSerializer.ReadObject(fs);
+                            CreateNewClass(dataClass, e);
                     }
+                        catch (Exception)
+                    {
+                        MessageBox.Show("Проблемы с файлом: " + s);
+                    }
+                }
                 }
             }
             
@@ -57,6 +67,7 @@ namespace Unity_Class_Tree
         // Создание нового класса
         private void CreateNewClass(object sender, RoutedEventArgs e)
         {
+            DataClass dt = new DataClass();
             bool createOreLoadNewClass = false;
             if(sender.GetType().ToString() == "Unity_Class_Tree.DataClass")
             {
@@ -90,7 +101,7 @@ namespace Unity_Class_Tree
                 UIClass uIClass = new UIClass();
 
                 // classGrid
-                uIClass.classGrid = new Grid { Name = NewClassNameTextBox.Text, Width = 400, Height = 109, Background = new SolidColorBrush(Color.FromRgb(108, 108, 109)), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                uIClass.classGrid = new Grid { Name = NewClassNameTextBox.Text, Tag = "", Width = 400, Height = 109, Background = new SolidColorBrush(Color.FromRgb(108, 108, 109)), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
                 uIClass.classGrid.MouseLeftButtonDown += GridMouseLeftButtonDown;
                 uIClass.classGrid.MouseLeftButtonUp += GridMouseLeftButtonUp;
                 uIClass.classGrid.MouseMove += GridMouseMove;
@@ -100,10 +111,8 @@ namespace Unity_Class_Tree
                 uIClass.classDescriptionButton = new Button { Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), Foreground = new SolidColorBrush(Color.FromRgb(43, 175, 62)), BorderBrush = new SolidColorBrush(Color.FromRgb(65, 65, 65)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(0, 0, 0, 88), Content = "???" };
                 uIClass.classDescriptionButton.Click += OpenHideClassDescriptionTextBoxMethod;
                 // 2 classTextboxes
-                uIClass.classNameTextBox = new TextBox { Name = "classNameTextBox", Width = 296, FontSize = 19, VerticalAlignment = VerticalAlignment.Center, TextAlignment = TextAlignment.Center, Foreground = new SolidColorBrush(Color.FromRgb(43, 145, 175)), BorderThickness = new Thickness(0), Margin = new Thickness(0, 0, 0, 22), Text = dt.className };
-                uIClass.classNameTextBox.GotFocus += ChildrenGotFocus;
-                uIClass.classNameTextBox.LostFocus += ChangeClassNameLostFocus;
-                uIClass.classNameTextBox.LostFocus += LostFocusClassSaving;
+                uIClass.classNameTextBlock = new TextBlock { Name = "classNameTextBlock", Width = 296, FontSize = 19, VerticalAlignment = VerticalAlignment.Center, TextAlignment = TextAlignment.Center, Foreground = new SolidColorBrush(Color.FromRgb(43, 145, 175)), Margin = new Thickness(0, 0, 0, 22), Text = dt.className };
+                uIClass.classNameTextBlock.GotFocus += ChildrenGotFocus;
                 uIClass.classDescriptionTextBox = new TextBox { Name = "classDescriptionTextBox", FontFamily = new FontFamily("Calibri"), Width = 296, Height = 140, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(52, -140, 52, 110), Visibility = Visibility.Collapsed, Text = dt.classDescription };
                 uIClass.classDescriptionTextBox.GotFocus += ChildrenGotFocus;
                 uIClass.classDescriptionTextBox.LostFocus += LostFocusClassSaving;
@@ -203,7 +212,7 @@ namespace Unity_Class_Tree
                     a = 0;
                 }
                 // right Meth
-                uIClass.rightMethCheckBox = new CheckBox { Name = "rightMeth", Width = 16, Height = 16, Margin = new Thickness(320, 20, 0, 0), IsChecked = dt.rightMessageDataClassCheckBox, Opacity = 0.4 };
+                uIClass.rightMethCheckBox = new CheckBox { Name = "rightMeth", Width = 16, Height = 16, Margin = new Thickness(320, 20, 0, 0), IsChecked = dt.rightMethDataClassCheckBox, Opacity = 0.4 };
                 uIClass.rightMethCheckBox.GotFocus += ChildrenGotFocus;
                 uIClass.rightMethCheckBox.Click += OpenHideButtonsMethod;
                 uIClass.rightMethCheckBox.Click += LostFocusClassSaving;
@@ -392,7 +401,7 @@ namespace Unity_Class_Tree
                 // Adding elements to classGrid
                 uIClass.classGrid.Children.Add(uIClass.classBorderWhite);
                 uIClass.classGrid.Children.Add(uIClass.classDescriptionButton);
-                uIClass.classGrid.Children.Add(uIClass.classNameTextBox);
+                uIClass.classGrid.Children.Add(uIClass.classNameTextBlock);
                 uIClass.classGrid.Children.Add(uIClass.classDescriptionTextBox);
                 uIClass.classGrid.Children.Add(uIClass.rightACheckBox);
                 uIClass.classGrid.Children.Add(uIClass.rightAButton);
@@ -424,6 +433,28 @@ namespace Unity_Class_Tree
                 canvas.Children.Add(uIClass.classGrid);
                 Canvas.SetLeft(uIClass.classGrid, dt.canvasPointClass.X);
                 Canvas.SetTop(uIClass.classGrid, dt.canvasPointClass.Y);
+
+                string[] allClasses = Directory.GetFiles("D:\\Unity Class Tree\\Classes"); // Список всех классов в папке Classes
+                foreach (string s in allClasses) // Загрузка положения родителя на холсте, чтобы нарисовать линию от дочернего класса
+                {
+                    if (s == "D:\\Unity Class Tree\\Classes\\" + dt.parentClassNameForThis + ".json") // Находится файл с именем родительского класса
+                    {
+                        using (FileStream fs = new FileStream(s, FileMode.Open))
+                        {
+                            DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(DataClass));
+                            try
+                            {
+                                DataClass parentClass = (DataClass)jsonSerializer.ReadObject(fs); // Загружается файл родительского класса
+                                Line line = new Line { Name = dt.className, X1 = parentClass.canvasPointClass.X + 200, Y1 = parentClass.canvasPointClass.Y + 109, X2 = dt.canvasPointClass.X + 200, Y2 = dt.canvasPointClass.Y, Fill = new SolidColorBrush(Colors.Yellow), Stroke = new SolidColorBrush(Color.FromRgb(253, 221, 4)), StrokeThickness = 4 };
+                                canvas.Children.Add(line);
+                        }
+                            catch (Exception ex)
+                        {
+                            MessageBox.Show("Проблемы с файлом: " + s + "    " + ex.Message);
+                        }
+                    }
+                    }
+                }
             }                
         }
 
@@ -452,21 +483,47 @@ namespace Unity_Class_Tree
             Grid grid = (sender as FrameworkElement).Parent as Grid; // Получение Grid-а, чьи дочерние элементы потеряли фокус
             if (grid == null)
             {
-                grid = sender as Grid; // Либо получение самого грида, который был передан из GridMouseLeftButtonUp()
+                grid = sender as Grid; // Либо получение самого грида, который был передан из GridMouseLeftButtonUp() или из ClassConnectButtonClick()
             }
+            try
+            {
+                using (FileStream fs2 = new FileStream("D:\\Unity Class Tree\\Classes\\" + grid.Name + ".json", FileMode.Open)) // Проверяет, был -ли у вызывающего этот метод класса родитель, записанный в свойстве parentClassNameForThis
+                {
+                    DataContractJsonSerializer jsonSerializer2 = new DataContractJsonSerializer(typeof(DataClass));
+                    DataClass YesOrNoParent = (DataClass)jsonSerializer2.ReadObject(fs2);
+                    if (YesOrNoParent.parentClassNameForThis != null) { nameOfParent = YesOrNoParent.parentClassNameForThis; }
+                }
+            }
+            catch(Exception)
+            {
+
+            }
+
             using (FileStream fs = new FileStream("D:\\Unity Class Tree\\Classes\\" + grid.Name + ".json", FileMode.Create))
             {
                 rtb = sender as RichTextBox;
                 DataClass dataClassSaving = new DataClass();
                 TextBox[] textBoxes = grid.Children.OfType<TextBox>().ToArray();
+                TextBlock[] textBlocks = grid.Children.OfType<TextBlock>().ToArray();
                 CheckBox[] checkBoxes = grid.Children.OfType<CheckBox>().ToArray();
                 RichTextBox[] richTextBoxes = grid.Children.OfType<RichTextBox>().ToArray();
 
                 dataClassSaving.canvasPointClass = currentCanvasPointClass; // установка положения класса (его Grid) на холсте. Для нового класса это (0, 0), для уже созданного и перемещенного - его последнее положение
+                dataClassSaving.parentClassNameForThis = nameOfParent;
+                if (grid.Tag.ToString() == "SecondClassGrid")
+                {
+                    if (grid.Tag.ToString() == "SecondClassGrid" && FirstClassGrid != null)
+                    {
+                        dataClassSaving.parentClassNameForThis = FirstClassGrid.Name;
+                    }
+                }
                 foreach (TextBox tb in textBoxes) // Запись текста из всех TextBox-ов класса в соответствующие свойства DataClass
                 {
-                    if (tb.Name == "classNameTextBox") { dataClassSaving.className = tb.Text; }
-                    else if (tb.Name == "classDescriptionTextBox") { dataClassSaving.classDescription = tb.Text; }
+                    if (tb.Name == "classDescriptionTextBox") { dataClassSaving.classDescription = tb.Text; }
+                }
+                foreach (TextBlock tbl in textBlocks) // Запись текста из всех TextBlock-ов класса в соответствующие свойства DataClass
+                {
+                    if (tbl.Name == "classNameTextBlock") { dataClassSaving.className = tbl.Text; }
                 }
                 foreach (CheckBox cb in checkBoxes) // Запись значений из всех CheckBox-ов класса в соответствующие свойства DataClass
                 {
@@ -611,22 +668,15 @@ namespace Unity_Class_Tree
                 }
                 DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(DataClass));
                 jsonSerializer.WriteObject(fs, dataClassSaving);
+                nameOfParent = null;
             }
         }
 
-        // Измненение имени выделенного класса
+        // Получение фокуса дочерними элементами
         private void ChildrenGotFocus(object sender, RoutedEventArgs e) // При выделении classNameTextBox
         {
             currentClassName = ((sender as FrameworkElement).Parent as Grid).Name; // в эту переменную записывается текущее имя выделенного класса
             currentCanvasPointClass = new Point((double)((sender as FrameworkElement).Parent as Grid).GetValue(Canvas.LeftProperty), (double)((sender as FrameworkElement).Parent as Grid).GetValue(Canvas.TopProperty));
-        }
-
-        // Удаление файла со старым именем класса
-        private void ChangeClassNameLostFocus(object sender, RoutedEventArgs e) // Изменяет имя класса. Создает новый файл с новым именем класса, сохранив в него все свойства этого класса, а так же удаляет файл со старым именем класса
-        {
-            Grid grid = (sender as FrameworkElement).Parent as Grid;
-            grid.Name = (sender as TextBox).Text;
-            File.Delete("D:\\Unity Class Tree\\Classes\\" + currentClassName + ".json");
         }
 
         //
@@ -672,6 +722,25 @@ namespace Unity_Class_Tree
             if (e.OriginalSource.GetType().ToString() == "System.Windows.Controls.Grid") // Код ниже сработает, если событие было вызвано по нажатию на родительский элемент (т.е. Grid), а не по нажатию на его дочерние элементы
             {
                 TakeClassGrid = sender as Grid;
+                if (TakeClassGrid.Name != currentClassName)
+                {
+                    Grid[] grids = canvas.Children.OfType<Grid>().ToArray();
+                    foreach (Grid g in grids)
+                    {
+                        if (g.Name == currentClassName)
+                        {
+                            Border[] borders = g.Children.OfType<Border>().ToArray();
+                            foreach (Border b in borders) { if (b.Name == "OwterGlow") { g.Children.Remove(b); } }
+                        }
+                    }
+                }
+                else
+                {
+                    Border[] borders = TakeClassGrid.Children.OfType<Border>().ToArray();
+                    foreach (Border b in borders) { if (b.Name == "OwterGlow") { TakeClassGrid.Children.Remove(b); } }
+                }
+                TakeClassGrid.Children.Add(new Border { Name = "OwterGlow", Width = 400, Height = 109, VerticalAlignment = VerticalAlignment.Center, BorderBrush = new SolidColorBrush(Color.FromRgb(255, 150, 0)), BorderThickness = new Thickness(3) });
+                currentClassName = TakeClassGrid.Name;
                 GetMouseClass = true;
                 Mouse.Capture(TakeClassGrid);
                 mousePosClassCanvasOld = e.GetPosition(canvas);
@@ -687,6 +756,62 @@ namespace Unity_Class_Tree
                 Canvas.SetTop(TakeClassGrid, CanvasElement.Y + (mousePosClassCanvasNew.Y - mousePosClassCanvasOld.Y));
                 mousePosClassCanvasOld.X = mousePosClassCanvasNew.X;
                 mousePosClassCanvasOld.Y = mousePosClassCanvasNew.Y;
+
+                DataClass ExampleClass = new DataClass();
+                string[] allClasses = Directory.GetFiles("D:\\Unity Class Tree\\Classes");
+                foreach (string s in allClasses)
+                {
+                    if (s == "D:\\Unity Class Tree\\Classes\\" + TakeClassGrid.Name + ".json") // Находится файл с именем перемещаемого класса
+                    {
+                        using (FileStream fs = new FileStream(s, FileMode.Open))
+                        {
+                            DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(DataClass));
+                            try
+                            {
+                                ExampleClass = (DataClass)jsonSerializer.ReadObject(fs); // Загружается файл перемещаемого класса в переменную movingClass
+                            }
+                            catch (Exception)
+                            {
+                                MessageBox.Show("Проблемы с файлом: " + s);
+                            }
+                        }
+                    }
+                }
+                if (ExampleClass.parentClassNameForThis != null) // Если у перемещаемого класса в его свойстве parentClassNameForThis указан родитель
+                {
+                    foreach (string s in allClasses) // Тогда найти этого родителя, а у него найти его координаты
+                    {
+                        if (s == "D:\\Unity Class Tree\\Classes\\" + ExampleClass.parentClassNameForThis + ".json")
+                        {
+                            using (FileStream fs = new FileStream(s, FileMode.Open))
+                            {
+                                try
+                                {
+                                    DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(DataClass));
+                                    ExampleClass = (DataClass)jsonSerializer.ReadObject(fs);
+                                    TakeClassGrid.Tag = ExampleClass.className;
+                                    Point ParentPoint = ExampleClass.canvasPointClass;
+                                    Point ChildPoint = new Point((double)TakeClassGrid.GetValue(Canvas.LeftProperty), (double)TakeClassGrid.GetValue(Canvas.TopProperty));                                  
+                                    Line[] lines = canvas.Children.OfType<Line>().ToArray();
+                                    foreach (Line l in lines) // Постоянно удалять старые линии
+                                    {
+                                        if (l.Name == TakeClassGrid.Name)
+                                        {
+                                            canvas.Children.Remove(l);
+                                        }
+                                    }
+                                    // А создавать новые (новую, по текущему положение)
+                                    Line line = new Line { Name = TakeClassGrid.Name, X1 = ParentPoint.X + 200, Y1 = ParentPoint.Y + 109, X2 = ChildPoint.X + 200, Y2 = ChildPoint.Y, Fill = new SolidColorBrush(Colors.Yellow), Stroke = new SolidColorBrush(Color.FromRgb(253, 221, 4)), StrokeThickness = 4 };
+                                    canvas.Children.Add(line);
+                                }
+                                catch (Exception)
+                                {
+                                    MessageBox.Show("Проблемы с файлом: " + s);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         private void GridMouseLeftButtonUp(object sender, MouseButtonEventArgs e) // Когда кнопка мыши отпущена, перемещение классов по холсту прекращается
@@ -697,8 +822,7 @@ namespace Unity_Class_Tree
                 TakeClassGrid.ReleaseMouseCapture();
                 mousePosClassCanvasOld = new Point(0, 0);
                 currentCanvasPointClass = new Point((double)TakeClassGrid.GetValue(Canvas.LeftProperty), (double)TakeClassGrid.GetValue(Canvas.TopProperty));
-                TakeClassGrid = null;
-                LostFocusClassSaving(sender, e);
+                LostFocusClassSaving(TakeClassGrid, e);
             }
         }
 
@@ -707,6 +831,11 @@ namespace Unity_Class_Tree
         {
             if (e.OriginalSource.GetType().ToString() == "System.Windows.Controls.Canvas") // Код ниже сработает, если событие было вызвано по нажатию на холст (canvas)
             {
+                if (TakeClassGrid != null) // Здесь происходит удаление подсветки выбранного класса
+                {
+                    Border[] borders = TakeClassGrid.Children.OfType<Border>().ToArray();
+                    foreach (Border b in borders) { if (b.Name == "OwterGlow") { TakeClassGrid.Children.Remove(b); } }
+                }
                 GetMouseCanvas = true;
                 mousePosCanvasOld = e.GetPosition(W1);
             }
@@ -765,6 +894,62 @@ namespace Unity_Class_Tree
                     rtb.Selection.ApplyPropertyValue(FontSizeProperty, (--a).ToString());
                 }
             }
+        }
+
+        // Выбор первого класса для установки связи
+        private void AddFirstClassButtonClick(object sender, RoutedEventArgs e)
+        {
+            if(TakeClassGrid != null)
+            {
+                if(SecondClassGrid != TakeClassGrid)
+                {
+                    FirstClassGrid = TakeClassGrid;
+                    FirstClassGrid.Tag = "FirstClassGrid";
+                    FirstClassGridTextBox.Text = FirstClassGrid.Name;
+                    TakeClassGrid = null;
+                }
+            }
+            else { MessageBox.Show("Этот класс уже выбран."); }
+        }
+        // Выбор второго класса для установки связи
+        private void AddSecondClassButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (TakeClassGrid != null)
+            {
+                if(FirstClassGrid != TakeClassGrid)
+                {
+                    SecondClassGrid = TakeClassGrid;
+                    SecondClassGrid.Tag = "SecondClassGrid";
+                    SecondClassGridTextBox.Text = SecondClassGrid.Name;
+                    TakeClassGrid = null;
+                }
+            }
+            else { MessageBox.Show("Этот класс уже выбран."); }
+        }
+        // Установка связи между двумя выбранными классами, а также вызов метода сохранения свойств для каждого из этих двух классов
+        private void ClassConnectButtonClick(object sender, RoutedEventArgs e)
+        {
+            if(FirstClassGrid != null && SecondClassGrid != null)
+            {
+                Point FirstClassGridPoint = new Point((double)FirstClassGrid.GetValue(Canvas.LeftProperty), (double)FirstClassGrid.GetValue(Canvas.TopProperty));
+                Point SecondClassGridPoint = new Point((double)SecondClassGrid.GetValue(Canvas.LeftProperty), (double)SecondClassGrid.GetValue(Canvas.TopProperty));
+                Line line = new Line { Name = SecondClassGrid.Name, X1 = FirstClassGridPoint.X + 200, Y1 = FirstClassGridPoint.Y + 109, X2 = SecondClassGridPoint.X + 200, Y2 = SecondClassGridPoint.Y, Fill = new SolidColorBrush(Colors.Yellow), Stroke = new SolidColorBrush(Color.FromRgb(253, 221, 4)), StrokeThickness = 4 };
+                canvas.Children.Add(line);
+                LostFocusClassSaving(SecondClassGrid, e);
+                FirstClassGrid = null;
+                SecondClassGrid = null;
+                TakeClassGrid = null;
+                FirstClassGridTextBox.Text = "First Class Name";
+                SecondClassGridTextBox.Text = "Second Class Name";
+            }
+        }
+        // Удаление связи между выбранными классами, а так же установка по дефолту значений для FirstClassGridTextBox.Text и SecondClassGridTextBox.Text
+        private void ClassDeleteConnectButtonClick(object sender, RoutedEventArgs e)
+        {
+            FirstClassGridTextBox.Text = "First Class Name";
+            SecondClassGridTextBox.Text = "Second Class Name";
+            FirstClassGrid = null;
+            SecondClassGrid = null;
         }
     }
 }

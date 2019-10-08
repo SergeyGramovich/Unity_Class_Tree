@@ -11,7 +11,7 @@ namespace Unity_Class_Tree
     {
         public Grid classGrid;
         public Border classBorderWhite;
-        public TextBox classNameTextBox;
+        public TextBlock classNameTextBlock;
         public Button classDescriptionButton;
         public TextBox classDescriptionTextBox;
 
