@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
@@ -26,6 +27,8 @@ namespace Unity_Class_Tree
         Point mousePosClassCanvasOld = new Point(0, 0);
         Point mousePosCanvasOld = new Point(0, 0);
         Point currentCanvasPointClass = new Point(0, 0);
+        ObservableCollection<string> allClassesList = new ObservableCollection<string>();
+        public double canvasSize;
         public string currentClassName = "";
         public string classParentName = "";
         public string nameOfParent = "";
@@ -40,28 +43,36 @@ namespace Unity_Class_Tree
         // Загрузка всех классов (из папки "Classes") на холст
         public void LoadAllClasses()
         {
-            RoutedEventArgs e = new RoutedEventArgs();
-            if(Directory.Exists("D:\\Unity Class Tree\\Classes"))
+            if (Directory.Exists("D:\\Unity Class Tree"))
             {
-                string[] allClasses = Directory.GetFiles("D:\\Unity Class Tree\\Classes");
-                foreach(string s in allClasses)
+                if(File.Exists("D:\\Unity Class Tree\\Canvas Size.json"))
                 {
-                    using (FileStream fs = new FileStream(s, FileMode.Open))
+                    using (FileStream fs = new FileStream("D:\\Unity Class Tree\\Canvas Size.json", FileMode.Open))
                     {
-                        DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(DataClass));
+                        DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(double));
+                        canvasSize = (double)jsonSerializer.ReadObject(fs);
+                    }
+                }
+                RoutedEventArgs e = new RoutedEventArgs();
+                string[] allClassFiles = Directory.GetFiles("D:\\Unity Class Tree\\Classes");
+                foreach (string s in allClassFiles)
+                {
+                    using (FileStream fs2 = new FileStream(s, FileMode.Open))
+                    {
+                        DataContractJsonSerializer jsonSerializer2 = new DataContractJsonSerializer(typeof(DataClass));
                         try
                         {
-                            DataClass dataClass = (DataClass)jsonSerializer.ReadObject(fs);
+                            DataClass dataClass = (DataClass)jsonSerializer2.ReadObject(fs2);
                             CreateNewClass(dataClass, e);
+                        }
+                        catch (Exception) { MessageBox.Show("Проблемы с файлом: " + s); }
                     }
-                        catch (Exception)
-                    {
-                        MessageBox.Show("Проблемы с файлом: " + s);
-                    }
+                    string classNameInAllClassesList = s.Replace("D:\\Unity Class Tree\\Classes\\", "");
+                    classNameInAllClassesList = classNameInAllClassesList.Replace(".json", "");
+                    allClassesList.Add(classNameInAllClassesList);
                 }
-                }
-            }
-            
+                allClassesListBox.ItemsSource = allClassesList;
+            }          
         }
         
         // Создание нового класса
@@ -101,7 +112,7 @@ namespace Unity_Class_Tree
                 UIClass uIClass = new UIClass();
 
                 // classGrid
-                uIClass.classGrid = new Grid { Name = NewClassNameTextBox.Text, Tag = "", Width = 400, Height = 109, Background = new SolidColorBrush(Color.FromRgb(108, 108, 109)), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                uIClass.classGrid = new Grid { Name = NewClassNameTextBox.Text, Tag = "", Width = 400, Height = 109, Background = new SolidColorBrush(Color.FromRgb(108, 108, 109)) };
                 uIClass.classGrid.MouseLeftButtonDown += GridMouseLeftButtonDown;
                 uIClass.classGrid.MouseLeftButtonUp += GridMouseLeftButtonUp;
                 uIClass.classGrid.MouseMove += GridMouseMove;
@@ -430,7 +441,7 @@ namespace Unity_Class_Tree
                 uIClass.classGrid.Children.Add(uIClass.leftStaticMethCheckBox);
                 uIClass.classGrid.Children.Add(uIClass.leftStaticMethButton);
                 uIClass.classGrid.Children.Add(uIClass.leftStaticMethRichTextBox);
-                canvas.Children.Add(uIClass.classGrid);
+                bigCanvas.Children.Add(uIClass.classGrid);
                 Canvas.SetLeft(uIClass.classGrid, dt.canvasPointClass.X);
                 Canvas.SetTop(uIClass.classGrid, dt.canvasPointClass.Y);
 
@@ -446,7 +457,7 @@ namespace Unity_Class_Tree
                             {
                                 DataClass parentClass = (DataClass)jsonSerializer.ReadObject(fs); // Загружается файл родительского класса
                                 Line line = new Line { Name = dt.className, X1 = parentClass.canvasPointClass.X + 200, Y1 = parentClass.canvasPointClass.Y + 109, X2 = dt.canvasPointClass.X + 200, Y2 = dt.canvasPointClass.Y, Fill = new SolidColorBrush(Colors.Yellow), Stroke = new SolidColorBrush(Color.FromRgb(253, 221, 4)), StrokeThickness = 4 };
-                                canvas.Children.Add(line);
+                                bigCanvas.Children.Add(line);
                         }
                             catch (Exception ex)
                         {
@@ -467,10 +478,10 @@ namespace Unity_Class_Tree
                 {
                     int a = 0;
                     File.Delete("D://Unity Class Tree//Classes//" + NewClassNameTextBox.Text + ".json");
-                    Grid[] grids = canvas.Children.OfType<Grid>().ToArray();
+                    Grid[] grids = bigCanvas.Children.OfType<Grid>().ToArray();
                     foreach(Grid g in grids)
                     {
-                        if (g.Name == NewClassNameTextBox.Text) { canvas.Children.Remove(grids[a]); }
+                        if (g.Name == NewClassNameTextBox.Text) { bigCanvas.Children.Remove(grids[a]); }
                         a++;
                     }                    
                 }
@@ -724,7 +735,7 @@ namespace Unity_Class_Tree
                 TakeClassGrid = sender as Grid;
                 if (TakeClassGrid.Name != currentClassName)
                 {
-                    Grid[] grids = canvas.Children.OfType<Grid>().ToArray();
+                    Grid[] grids = bigCanvas.Children.OfType<Grid>().ToArray();
                     foreach (Grid g in grids)
                     {
                         if (g.Name == currentClassName)
@@ -743,15 +754,17 @@ namespace Unity_Class_Tree
                 currentClassName = TakeClassGrid.Name;
                 GetMouseClass = true;
                 Mouse.Capture(TakeClassGrid);
-                mousePosClassCanvasOld = e.GetPosition(canvas);
+                mousePosClassCanvasOld = e.GetPosition(bigCanvas);
             }
         }
         private void GridMouseMove(object sender, MouseEventArgs e) // Само перемещение классов по холсту
         {
             if (GetMouseClass)
             {
-                Point mousePosClassCanvasNew = e.GetPosition(canvas);
+                Point mousePosClassCanvasNew = e.GetPosition(bigCanvas);
                 Point CanvasElement = new Point((double)TakeClassGrid.GetValue(Canvas.LeftProperty), (double)TakeClassGrid.GetValue(Canvas.TopProperty));
+                if (CanvasElement.X < 0) { CanvasElement.X = 0; } else if(CanvasElement.Y < 0) { CanvasElement.Y = 0; }
+                if(CanvasElement.X > bigCanvas.Width - 400) { CanvasElement.X = (bigCanvas.Width - 400) - 1; } else if (CanvasElement.Y > bigCanvas.Height - 109) { CanvasElement.Y = (bigCanvas.Height - 109) - 1; }
                 Canvas.SetLeft(TakeClassGrid, CanvasElement.X + (mousePosClassCanvasNew.X - mousePosClassCanvasOld.X));
                 Canvas.SetTop(TakeClassGrid, CanvasElement.Y + (mousePosClassCanvasNew.Y - mousePosClassCanvasOld.Y));
                 mousePosClassCanvasOld.X = mousePosClassCanvasNew.X;
@@ -792,17 +805,17 @@ namespace Unity_Class_Tree
                                     TakeClassGrid.Tag = ExampleClass.className;
                                     Point ParentPoint = ExampleClass.canvasPointClass;
                                     Point ChildPoint = new Point((double)TakeClassGrid.GetValue(Canvas.LeftProperty), (double)TakeClassGrid.GetValue(Canvas.TopProperty));                                  
-                                    Line[] lines = canvas.Children.OfType<Line>().ToArray();
+                                    Line[] lines = bigCanvas.Children.OfType<Line>().ToArray();
                                     foreach (Line l in lines) // Постоянно удалять старые линии
                                     {
                                         if (l.Name == TakeClassGrid.Name)
                                         {
-                                            canvas.Children.Remove(l);
+                                            bigCanvas.Children.Remove(l);
                                         }
                                     }
                                     // А создавать новые (новую, по текущему положение)
                                     Line line = new Line { Name = TakeClassGrid.Name, X1 = ParentPoint.X + 200, Y1 = ParentPoint.Y + 109, X2 = ChildPoint.X + 200, Y2 = ChildPoint.Y, Fill = new SolidColorBrush(Colors.Yellow), Stroke = new SolidColorBrush(Color.FromRgb(253, 221, 4)), StrokeThickness = 4 };
-                                    canvas.Children.Add(line);
+                                    bigCanvas.Children.Add(line);
                                 }
                                 catch (Exception)
                                 {
@@ -934,7 +947,7 @@ namespace Unity_Class_Tree
                 Point FirstClassGridPoint = new Point((double)FirstClassGrid.GetValue(Canvas.LeftProperty), (double)FirstClassGrid.GetValue(Canvas.TopProperty));
                 Point SecondClassGridPoint = new Point((double)SecondClassGrid.GetValue(Canvas.LeftProperty), (double)SecondClassGrid.GetValue(Canvas.TopProperty));
                 Line line = new Line { Name = SecondClassGrid.Name, X1 = FirstClassGridPoint.X + 200, Y1 = FirstClassGridPoint.Y + 109, X2 = SecondClassGridPoint.X + 200, Y2 = SecondClassGridPoint.Y, Fill = new SolidColorBrush(Colors.Yellow), Stroke = new SolidColorBrush(Color.FromRgb(253, 221, 4)), StrokeThickness = 4 };
-                canvas.Children.Add(line);
+                bigCanvas.Children.Add(line);
                 LostFocusClassSaving(SecondClassGrid, e);
                 FirstClassGrid = null;
                 SecondClassGrid = null;
@@ -946,10 +959,98 @@ namespace Unity_Class_Tree
         // Удаление связи между выбранными классами, а так же установка по дефолту значений для FirstClassGridTextBox.Text и SecondClassGridTextBox.Text
         private void ClassDeleteConnectButtonClick(object sender, RoutedEventArgs e)
         {
+            if(SecondClassGrid != null)
+            {
+                DataClass deleteConnectionParent = new DataClass();
+                using (FileStream fs = new FileStream("D:\\Unity Class Tree\\Classes\\" + SecondClassGrid.Name + ".json", FileMode.Open))
+                {
+                    DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(DataClass));
+                    deleteConnectionParent = (DataClass)jsonSerializer.ReadObject(fs); // Загружается файл дочернего класса, чтобы удалить наследование
+                    deleteConnectionParent.parentClassNameForThis = null;
+                }
+                using (FileStream fs2 = new FileStream("D:\\Unity Class Tree\\Classes\\" + SecondClassGrid.Name + ".json", FileMode.Create))
+                {
+                    DataContractJsonSerializer jsonSerializer2 = new DataContractJsonSerializer(typeof(DataClass));
+                    jsonSerializer2.WriteObject(fs2, deleteConnectionParent);
+                    int a = 0;
+                    Line[] lines = bigCanvas.Children.OfType<Line>().ToArray();
+                    foreach (Line l in lines)
+                    {
+                        if (l.Name == deleteConnectionParent.className) { bigCanvas.Children.Remove(lines[a]); }
+                        a++;
+                    }
+                }
+            }
             FirstClassGridTextBox.Text = "First Class Name";
             SecondClassGridTextBox.Text = "Second Class Name";
             FirstClassGrid = null;
             SecondClassGrid = null;
+        }
+
+        // Команда открытия littleCanvas
+        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if(bigCanvas.Visibility == Visibility.Visible) // Если bigCanvas открыт, то закроет его, а на его месте откроет создаст и откроет littleCanvas, на который загрузи в миниатюре все что было в bigCanvas (в том числе и положение скрола (ScrollViewer1))
+            {
+                Canvas littleCanvas = new Canvas { Name = "littleCanvas", Background = new SolidColorBrush(Color.FromRgb(178, 178, 178)), Width = bigCanvas.Width, Height = bigCanvas.Height};
+                littleCanvas.Visibility = Visibility.Visible;
+                bigCanvas.Visibility = Visibility.Collapsed;
+                Grid[] grids = bigCanvas.Children.OfType<Grid>().ToArray();
+                Line[] lines = bigCanvas.Children.OfType<Line>().ToArray();
+                foreach (Grid g in grids)
+                {
+                    Grid grid = new Grid { Width = g.Width / 3, Height = g.Height / 3, Background = new SolidColorBrush(Color.FromRgb(108, 108, 109)) };
+                    Border border = new Border { Width = g.Children.OfType<Border>().First<Border>().Width / 2.5, Height = g.Children.OfType<Border>().First<Border>().Height / 2.5, Background = new SolidColorBrush(Colors.White), CornerRadius = new CornerRadius(6), VerticalAlignment = VerticalAlignment.Center, BorderBrush = new SolidColorBrush(Color.FromRgb(65, 65, 65)), BorderThickness = new Thickness(2), Margin = new Thickness(0, 0, 0, 22 / 2.5) };
+                    TextBlock textBlock = new TextBlock { Text = g.Children.OfType<TextBlock>().First<TextBlock>().Text, Width = 296 / 2.5, FontSize = 19 / 2, VerticalAlignment = VerticalAlignment.Center, TextAlignment = TextAlignment.Center, Foreground = new SolidColorBrush(Color.FromRgb(43, 145, 175)), Margin = new Thickness(0, 0, 0, 22 / 2.5) };
+                    grid.Children.Add(border);
+                    grid.Children.Add(textBlock);
+                    littleCanvas.Children.Add(grid);
+                    Canvas.SetLeft(grid, new Point((double)g.GetValue(Canvas.LeftProperty), (double)g.GetValue(Canvas.TopProperty)).X / 3);
+                    Canvas.SetTop(grid, new Point((double)g.GetValue(Canvas.LeftProperty), (double)g.GetValue(Canvas.TopProperty)).Y / 3);
+                }
+                foreach (Line l in lines)
+                {
+                    Line line = new Line { X1 = l.X1 / 3, Y1 = l.Y1 / 3, X2 = l.X2 / 3, Y2 = l.Y2 / 3, Fill = new SolidColorBrush(Colors.Yellow), Stroke = new SolidColorBrush(Color.FromRgb(253, 221, 4)), StrokeThickness = 2 };
+                    littleCanvas.Children.Add(line);
+                }
+                    canvasGrid.Children.Add(littleCanvas);
+                ScrollViewer1.ScrollToHorizontalOffset(ScrollViewer1.HorizontalOffset / 3);
+                ScrollViewer1.ScrollToVerticalOffset(ScrollViewer1.VerticalOffset / 3);
+            } // Если bigCanvas закрыт, тогда откроет его и удалит сам littleCanvas и все что было на нем
+            else if(bigCanvas.Visibility == Visibility.Collapsed)
+            {
+                bigCanvas.Visibility = Visibility.Visible;
+                canvasGrid.Children.Clear();
+                canvasGrid.Children.Add(bigCanvas);
+                ScrollViewer1.ScrollToHorizontalOffset(ScrollViewer1.HorizontalOffset * 3);
+                ScrollViewer1.ScrollToVerticalOffset(ScrollViewer1.VerticalOffset * 3);
+            }
+        }
+
+        private void allClassesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Grid[] grids = bigCanvas.Children.OfType<Grid>().ToArray();
+            foreach(Grid g in grids)
+            {
+                if(g.Name == (sender as ListBox).SelectedItem.ToString())
+                {
+                    Point CanvasElement = new Point((double)g.GetValue(Canvas.LeftProperty), (double)g.GetValue(Canvas.TopProperty));
+                    ScrollViewer1.ScrollToHorizontalOffset(CanvasElement.X);
+                    ScrollViewer1.ScrollToVerticalOffset(CanvasElement.Y);
+                }
+            }
+        }
+
+        private void ChangebigCanvasSize(object sender, RoutedEventArgs e)
+        {
+            bigCanvas.Width = Convert.ToDouble(bigCanvasSizeTextBox.Text);
+            bigCanvas.Height = Convert.ToDouble(bigCanvasSizeTextBox.Text);
+            canvasSize = Convert.ToDouble(bigCanvasSizeTextBox.Text);
+            using (FileStream fs = new FileStream("D:\\Unity Class Tree\\Canvas Size.json", FileMode.Create))
+            {
+                DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(double));
+                jsonSerializer.WriteObject(fs, canvasSize);
+            }
         }
     }
 }

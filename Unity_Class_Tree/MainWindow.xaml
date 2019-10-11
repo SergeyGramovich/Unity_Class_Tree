@@ -6,53 +6,93 @@
         xmlns:local="clr-namespace:Unity_Class_Tree"
         mc:Ignorable="d"
         Title="MainWindow" Height="1080" Width="1920" FontSize="10" FontFamily="Tahoma" Name="W1">
+    <Window.CommandBindings>
+        <CommandBinding Command="Help" Executed="CommandBinding_Executed"/>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Command="Help" Key="W" Modifiers="Alt"/>
+    </Window.InputBindings>
+    
     <Grid>
-
-
         <ScrollViewer x:Name="ScrollViewer1" HorizontalAlignment="Left" Visibility="Visible" VerticalScrollBarVisibility="Auto" 
                       HorizontalScrollBarVisibility="Auto" Width="1916">
-            <Canvas Name="canvas" Background="#b2b2b2" Width="10000" Height="10000" MouseLeftButtonDown="canvas_MouseLeftButtonDown"
-                    MouseLeftButtonUp="canvas_MouseLeftButtonUp" MouseMove="canvas_MouseMove">               
-            </Canvas>
+            <Grid Name="canvasGrid">
+                <Canvas Name="bigCanvas" Background="#b2b2b2" Width="10000" Height="10000" MouseLeftButtonDown="canvas_MouseLeftButtonDown"
+                    MouseLeftButtonUp="canvas_MouseLeftButtonUp" MouseMove="canvas_MouseMove">
+                </Canvas>
+            </Grid>
         </ScrollViewer>
         <Border Name="Menu" Width="340" Background="Transparent"   Margin="1572,0,0,0">
             <Grid>
                 <Grid Width="300" Background="#969797" HorizontalAlignment="Right">
-                    <Rectangle Width="300" Height="120" Fill="#767676" Margin="0,0,0,940"></Rectangle>
-                    <Button Width="50" Height="50" FontSize="12" Margin="0,0,180,950" Background="#01b8fc" Foreground="White"
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.2*"></RowDefinition>
+                        <RowDefinition Height="0.5*"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Rectangle Width="300" Height="120" Fill="#767676" Margin="0,0,0,0"></Rectangle>
+                        <Button Width="50" Height="50" FontSize="12" Margin="0,0,240,0" Background="#01b8fc" Foreground="White"
                             Click="ChangeTextColorButton">COLORS</Button>
-                    <TextBox Name="FontSizeTextBox" Width="50" Height="50" FontSize="19" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                         Margin="100,0,0,950">14</TextBox>
-                    <Button Name="Apply" Width="50" Height="20" FontSize="14" Margin="100,0,0,878" Background="White" Click="ChangeTextSizeButtons">APPLY</Button>
-                    <Button Name="Minus" Width="30" Height="30" FontSize="18" Margin="0,0,0,950" Background="White" Click="ChangeTextSizeButtons">-</Button>
-                    <Button Name="Plus" Width="30" Height="30" FontSize="18" Margin="200,0,0,950" Background="White" Click="ChangeTextSizeButtons">+</Button>
+                        <TextBox Name="FontSizeTextBox" Width="50" Height="50" FontSize="19" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                         Margin="0,0,50,0">14</TextBox>
+                        <Button Name="Apply" Width="50" Height="20" FontSize="14" Margin="0,80,50,0" Background="White" Click="ChangeTextSizeButtons">APPLY</Button>
+                        <Button Name="Minus" Width="30" Height="30" FontSize="18" Margin="0,0,140,0" Background="White" Click="ChangeTextSizeButtons">-</Button>
+                        <Button Name="Plus" Width="30" Height="30" FontSize="18" Margin="40,0,0,0" Background="White" Click="ChangeTextSizeButtons">+</Button>
+                        <TextBox Name="bigCanvasSizeTextBox" Width="100" Height="50" FontSize="19" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                         Margin="190,0,0,0">10000</TextBox>
+                        <Button Name="Change" Width="50" Height="20" FontSize="14" Margin="190,80,0,0" Background="White" Click="ChangebigCanvasSize">APPLY</Button>
+                        <TextBlock Foreground="White" HorizontalAlignment="Center" Margin="190,10,0,0" FontSize="16" Height="20" VerticalAlignment="Top">CANVAS SIZE</TextBlock>
+                    </Grid>
 
-                    <Rectangle Width="300" Height="160" Fill="#767676" Margin="0,0,0,480"></Rectangle>
-                    <TextBox Name="NewClassNameTextBox" Width="290" Height="50" FontSize="19" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                         Margin="0,0,0,520" Foreground="#2b91af">NewClassName</TextBox>
-                    <Button Width="120" Height="30" FontSize="12" Margin="0,0,160,420" Background="#40d755" Foreground="White"
+                    <Grid Grid.Row="1">
+                        <Rectangle Width="300" Height="160" Fill="#767676"></Rectangle>
+                        <TextBox Name="NewClassNameTextBox" Width="290" Height="50" FontSize="19" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                         Margin="0,0,0,40" Foreground="#2b91af">NewClassName</TextBox>
+                        <Button Width="120" Height="30" FontSize="12" Margin="0,80,160,0" Background="#40d755" Foreground="White"
                             Click="CreateNewClass">CREATE NEW CLASS</Button>
-                    <Button Width="120" Height="30" FontSize="12" Margin="160,0,0,420" Background="#d74040" Foreground="White"
+                        <Button Width="120" Height="30" FontSize="12" Margin="160,80,0,0" Background="#d74040" Foreground="White"
                             Click="DeleteClass">DELETE CLASS</Button>
+                    </Grid>
 
-                    <Rectangle Width="300" Height="400" Fill="#767676" Margin="0,300,0,0"></Rectangle>
-                    <Button Width="120" Height="30" FontSize="12" Margin="0,0,0,0" Click="AddFirstClassButtonClick"
+                    <Grid Grid.Row="2">
+                        <Rectangle Height="420" Fill="#767676" ></Rectangle>
+                        <Button Width="120" Height="30" FontSize="14" Margin="0,0,0,320" Click="AddFirstClassButtonClick"
                             >Add First Class</Button>
-                    <TextBox Name="FirstClassGridTextBox" Width="290" Height="50" FontSize="19" VerticalContentAlignment="Center"
-                             HorizontalContentAlignment="Center" Margin="0,100,0,0">First Class Name</TextBox>
-                    <Button Width="100" Height="46" FontSize="14" Margin="0,300,160,0" Background="#40d755" Foreground="White"
+                        <TextBox Name="FirstClassGridTextBox" Width="290" Height="50" FontSize="19" VerticalContentAlignment="Center"
+                             HorizontalContentAlignment="Center" Margin="0,0,0,200">First Class Name</TextBox>
+                        <Button Width="100" Height="46" FontSize="14" Margin="0,0,160,0" Background="#40d755" Foreground="White"
                             Click="ClassConnectButtonClick">CONNECT</Button>
-                    <Button Width="100" Height="46" FontSize="14" Margin="160,300,0,0" Background="#d74040" Foreground="White"
+                        <Button Width="100" Height="46" FontSize="14" Margin="160,0,0,0" Background="#d74040" Foreground="White"
                             Click="ClassDeleteConnectButtonClick">CANCEL / DEL</Button>
-                    <Rectangle Width="6" Height="150" Fill="#fedd02" Margin="0,300,0,0"></Rectangle>
-                    <TextBox Name="SecondClassGridTextBox" Width="290" Height="50" FontSize="19" VerticalContentAlignment="Center"
-                             HorizontalContentAlignment="Center" Margin="0,500,0,0">Second Class Name</TextBox>
-                    <Button Width="200" Height="30" FontSize="12" Margin="0,600,0,0" Click="AddSecondClassButtonClick"
+                        <Rectangle Width="6" Height="150" Fill="#fedd02" Margin="0,0,0,0"></Rectangle>
+                        <TextBox Name="SecondClassGridTextBox" Width="290" Height="50" FontSize="19" VerticalContentAlignment="Center"
+                             HorizontalContentAlignment="Center" Margin="0,200,0,0">Second Class Name</TextBox>
+                        <Button Width="200" Height="30" FontSize="14" Margin="0,320,0,0" Click="AddSecondClassButtonClick"
                             >Add Second Class</Button>
+                    </Grid>
+
                 </Grid>
                 <Button Width="40" Height="70" Margin="0,0,300,0" FontSize="48" VerticalContentAlignment="Top"
                         Foreground="White" Background="#969797" Click="OpenMenuButtonClick">⇔</Button>
             </Grid>
         </Border>
+        <Grid  Width="160" HorizontalAlignment="Left">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.04*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Width="160" Height="32"  Background="#363636" VerticalAlignment="Top"
+                   Foreground="White" FontSize="22" TextAlignment="Center">List of clases</TextBlock>
+            <ListBox x:Name="allClassesListBox" Grid.Row="1" Background="#363636" SelectedItem="{Binding SelectedItem}" 
+                     SelectionChanged="allClassesListBox_SelectionChanged" Opacity="0.7">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" Foreground="White" FontSize="12"></TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
     </Grid>
 </Window>
