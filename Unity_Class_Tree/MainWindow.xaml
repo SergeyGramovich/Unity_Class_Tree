@@ -22,7 +22,7 @@
                 </Canvas>
             </Grid>
         </ScrollViewer>
-        <Border Name="Menu" Width="340" Background="Transparent"   Margin="1572,0,0,0">
+        <Border Name="Menu" Width="340" Background="Transparent"   Margin="1880,0,0,0">
             <Grid>
                 <Grid Width="300" Background="#969797" HorizontalAlignment="Right">
                     <Grid.RowDefinitions>

@@ -29,6 +29,7 @@ namespace Unity_Class_Tree
         Point currentCanvasPointClass = new Point(0, 0);
         ObservableCollection<string> allClassesList = new ObservableCollection<string>();
         public double canvasSize;
+        public int backup;
         public string currentClassName = "";
         public string classParentName = "";
         public string nameOfParent = "";
@@ -37,7 +38,40 @@ namespace Unity_Class_Tree
         public MainWindow()
         {
             InitializeComponent();
+            SaveBackup();
             LoadAllClasses();
+        }
+
+        // Backup всех файлов классов, раз в 5 запусков программы, в папку "D:\\Programming\\My Projects\\Unity Class Tree\\Classes\\"
+        public void SaveBackup()
+        {
+            if (File.Exists("D:\\Unity Class Tree\\BackupSave.json"))
+            {
+                using (FileStream fs = new FileStream("D:\\Unity Class Tree\\BackupSave.json", FileMode.Open))
+                {
+                    DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(int));
+                    backup = (int)jsonSerializer.ReadObject(fs);
+                }
+            }
+            else { MessageBox.Show("Файл 'BackuoSave' удален!!!"); }
+            backup++;
+            if(backup == 5)
+            {
+                backup = 0;
+                string[] backupAllFiles = Directory.GetFiles("D:\\Unity Class Tree\\Classes");
+                foreach(string s in backupAllFiles)
+                {
+
+                    File.Copy(s, "D:\\Programming\\My Projects\\Unity Class Tree\\Classes\\" + s.Replace("D:\\Unity Class Tree\\Classes\\", "") + ".json" );
+                    backup++;
+                }
+                backup = 0;
+            }
+            using (FileStream fs2 = new FileStream("D:\\Unity Class Tree\\BackupSave.json", FileMode.Create))
+            {
+                DataContractJsonSerializer jsonSerializer2 = new DataContractJsonSerializer(typeof(int));
+                jsonSerializer2.WriteObject(fs2, backup);
+            }
         }
 
         // Загрузка всех классов (из папки "Classes") на холст
@@ -1027,6 +1061,7 @@ namespace Unity_Class_Tree
             }
         }
 
+        // Здесь происходит перемещение к выбранному классу (т.е. скроллы переместяться так, чтобы стало видно выбранный класс)
         private void allClassesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Grid[] grids = bigCanvas.Children.OfType<Grid>().ToArray();
@@ -1041,6 +1076,7 @@ namespace Unity_Class_Tree
             }
         }
 
+        // Устаовка размера канваса с сохранением этого значения в файл
         private void ChangebigCanvasSize(object sender, RoutedEventArgs e)
         {
             bigCanvas.Width = Convert.ToDouble(bigCanvasSizeTextBox.Text);
