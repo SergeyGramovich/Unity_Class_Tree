@@ -5,7 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Unity_Class_Tree"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1080" Width="1920" FontSize="10" FontFamily="Tahoma" Name="W1">
+        Title="MainWindow" Height="1080" Width="1920" FontSize="10" FontFamily="Tahoma" Name="W1" 
+        WindowStartupLocation="CenterScreen" WindowState="Maximized">
+    <Window.Icon>
+        <BitmapImage UriSource="file:///C://Users//Opeth//source//repos//Unity_Class_Tree//Unity_Class_Tree//bin//Debug//Unity Class Tree Icon.ico"/>
+    </Window.Icon>
     <Window.CommandBindings>
         <CommandBinding Command="Help" Executed="CommandBinding_Executed"/>
     </Window.CommandBindings>
@@ -14,10 +18,10 @@
     </Window.InputBindings>
     
     <Grid>
-        <ScrollViewer x:Name="ScrollViewer1" HorizontalAlignment="Left" Visibility="Visible" VerticalScrollBarVisibility="Auto" 
-                      HorizontalScrollBarVisibility="Auto" Width="1916">
+        <ScrollViewer x:Name="ScrollViewer1" HorizontalAlignment="Left" Visibility="Visible" VerticalScrollBarVisibility="Hidden" 
+                      HorizontalScrollBarVisibility="Hidden" Width="1916">
             <Grid Name="canvasGrid">
-                <Canvas Name="bigCanvas" Background="#b2b2b2" Width="10000" Height="10000" MouseLeftButtonDown="canvas_MouseLeftButtonDown"
+                <Canvas Name="bigCanvas" Background="#b2b2b2" MouseLeftButtonDown="canvas_MouseLeftButtonDown"
                     MouseLeftButtonUp="canvas_MouseLeftButtonUp" MouseMove="canvas_MouseMove">
                 </Canvas>
             </Grid>

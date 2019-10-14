@@ -28,7 +28,8 @@ namespace Unity_Class_Tree
         Point mousePosCanvasOld = new Point(0, 0);
         Point currentCanvasPointClass = new Point(0, 0);
         ObservableCollection<string> allClassesList = new ObservableCollection<string>();
-        public double canvasSize;
+        ObservableCollection<string> allClassesList2 = new ObservableCollection<string>();
+        public double canvasSize = 10000;
         public int backupDirectoryNumber = 1;
         public string currentClassName = "";
         public string classParentName = "";
@@ -65,12 +66,14 @@ namespace Unity_Class_Tree
                 Directory.Delete("D:\\Programming\\My Projects\\Unity Class Tree\\ClassBackups\\Backup" + backupDirectoryNumber.ToString() + "\\", true);
             }
             Directory.CreateDirectory("D:\\Programming\\My Projects\\Unity Class Tree\\ClassBackups\\Backup" + backupDirectoryNumber.ToString() + "\\"); // Создать директорию с указанным числом
-
+            
             string[] backupAllFiles = Directory.GetFiles(currentProgramDirectory + "Classes");  // Получить список всех файлов классов из папки программы
+
             foreach (string s in backupAllFiles)
             {
-                File.Copy(s, "D:\\Programming\\My Projects\\Unity Class Tree\\ClassBackups\\Backup" + backupDirectoryNumber.ToString() + "\\" + s.Replace("D:\\Unity Class Tree\\Classes\\", "")); // Забыкапить каждый файл класса программы в указанное место
+                File.Copy(s, "D:\\Programming\\My Projects\\Unity Class Tree\\ClassBackups\\Backup" + backupDirectoryNumber.ToString() + "\\" + s.Replace(currentProgramDirectory + "Classes", "")); // Забыкапить каждый файл класса программы в указанное место
             }
+
             using (FileStream fs2 = new FileStream(currentProgramDirectory + "BackupSaveNumber.json", FileMode.Create)) // Сохранить увеличенное на еденицу значение backup-а
             {
                 backupDirectoryNumber++;
@@ -82,36 +85,35 @@ namespace Unity_Class_Tree
         // Загрузка всех классов (из папки "Classes") на холст
         public void LoadAllClasses()
         {
-            if (Directory.Exists(currentProgramDirectory))
+            if (File.Exists(currentProgramDirectory + "CanvasSize.json"))
             {
-                if(File.Exists(currentProgramDirectory + "Canvas Size.json"))
+                using (FileStream fs = new FileStream(currentProgramDirectory + "CanvasSize.json", FileMode.Open))
                 {
-                    using (FileStream fs = new FileStream(currentProgramDirectory + "Canvas Size.json", FileMode.Open))
-                    {
-                        DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(double));
-                        canvasSize = (double)jsonSerializer.ReadObject(fs);
-                    }
+                    DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(double));
+                    canvasSize = (double)jsonSerializer.ReadObject(fs);
                 }
-                RoutedEventArgs e = new RoutedEventArgs();
-                string[] allClassFiles = Directory.GetFiles(currentProgramDirectory + "Classes");
-                foreach (string s in allClassFiles)
+            }
+            bigCanvas.Width = canvasSize;
+            bigCanvas.Height = canvasSize;
+            RoutedEventArgs e = new RoutedEventArgs();
+            string[] allClassFiles = Directory.GetFiles(currentProgramDirectory + "Classes");
+            foreach (string s in allClassFiles)
+            {
+                using (FileStream fs2 = new FileStream(s, FileMode.Open))
                 {
-                    using (FileStream fs2 = new FileStream(s, FileMode.Open))
+                    DataContractJsonSerializer jsonSerializer2 = new DataContractJsonSerializer(typeof(DataClass));
+                    try
                     {
-                        DataContractJsonSerializer jsonSerializer2 = new DataContractJsonSerializer(typeof(DataClass));
-                        try
-                        {
-                            DataClass dataClass = (DataClass)jsonSerializer2.ReadObject(fs2);
-                            CreateNewClass(dataClass, e);
-                        }
-                        catch (Exception) { MessageBox.Show("Проблемы с файлом: " + s); }
+                        DataClass dataClass = (DataClass)jsonSerializer2.ReadObject(fs2);
+                        CreateNewClass(dataClass, e);
                     }
-                    string classNameInAllClassesList = s.Replace(currentProgramDirectory + "Classes\\", "");
-                    classNameInAllClassesList = classNameInAllClassesList.Replace(".json", "");
-                    allClassesList.Add(classNameInAllClassesList);
+                    catch (Exception ex) { MessageBox.Show("Проблемы с файлом: " + s + " - " + ex.Message); }
                 }
-                allClassesListBox.ItemsSource = allClassesList;
-            }          
+                string classNameInAllClassesList = s.Replace(currentProgramDirectory + "Classes\\", "");
+                classNameInAllClassesList = classNameInAllClassesList.Replace(".json", "");
+                allClassesList.Add(classNameInAllClassesList);
+            }
+            allClassesListBox.ItemsSource = allClassesList;
         }
         
         // Создание нового класса
@@ -127,12 +129,17 @@ namespace Unity_Class_Tree
             }
             else
             {
+                NewClassNameTextBox.Text = NewClassNameTextBox.Text.Replace(" ", "");
                 if (File.Exists(currentProgramDirectory + "Classes\\" + NewClassNameTextBox.Text + ".json")) { MessageBox.Show("Класс с таким именем уже создан."); } // Проверка введенного нового имени класса. Если такое имя уже есть, не создаст класс
                 else
                 {
                     //___CREATE DataClass OBJECT___
                     dt = new DataClass();
                     dt.className = NewClassNameTextBox.Text;
+                    allClassesList.Add(NewClassNameTextBox.Text);
+                    allClassesList = new ObservableCollection<string>(allClassesList.OrderBy(a => a));
+                    allClassesListBox.ItemsSource = allClassesList2;
+                    allClassesListBox.ItemsSource = allClassesList;
 
                     // Создание файла (в папке) для этого класса
                     using (FileStream fs = new FileStream(currentProgramDirectory + "Classes\\" + dt.className + ".json", FileMode.Create))
@@ -151,7 +158,7 @@ namespace Unity_Class_Tree
                 UIClass uIClass = new UIClass();
 
                 // classGrid
-                uIClass.classGrid = new Grid { Name = NewClassNameTextBox.Text, Tag = "", Width = 400, Height = 109, Background = new SolidColorBrush(Color.FromRgb(108, 108, 109)) };
+                uIClass.classGrid = new Grid { Name = NewClassNameTextBox.Text.ToString(), Tag = "", Width = 400, Height = 109, Background = new SolidColorBrush(Color.FromRgb(108, 108, 109)) };
                 uIClass.classGrid.MouseLeftButtonDown += GridMouseLeftButtonDown;
                 uIClass.classGrid.MouseLeftButtonUp += GridMouseLeftButtonUp;
                 uIClass.classGrid.MouseMove += GridMouseMove;
@@ -181,18 +188,18 @@ namespace Unity_Class_Tree
                 if (dt.rightADataClassCheckBox != true) { uIClass.rightAButton.Visibility = Visibility.Collapsed; }
                 uIClass.rightAButton.GotFocus += ChildrenGotFocus;
                 uIClass.rightAButton.Click += OpenHideRichTextBoxesMethod;
-                uIClass.rightARichTextBox = new RichTextBox { FontFamily = new FontFamily("Calibri"), Name = "rightARichTextBox", Width = 400, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -120, -430, -278), Visibility = Visibility.Collapsed, FontStyle = FontStyles.Normal };
+                uIClass.rightARichTextBox = new RichTextBox { Name = "rightARichTextBox", Width = 400, Height = 260, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -120, -430, -278), Visibility = Visibility.Collapsed, FontStyle = FontStyles.Normal };
                 uIClass.rightARichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
                 uIClass.rightARichTextBox.GotFocus += ChildrenGotFocus;
                 uIClass.rightARichTextBox.LostFocus += LostFocusClassSaving;
                 if(dt.rightAInlineText.Count > 0)
                 {
+                    FlowDocument rightAflowDocument = new FlowDocument();
+                    Paragraph rightAParagraph = new Paragraph();
+                    rightAflowDocument.Blocks.Add(rightAParagraph);
+                    uIClass.rightARichTextBox.Document = rightAflowDocument;
                     foreach (string t in dt.rightAInlineText)
                     {
-                        FlowDocument rightAflowDocument = new FlowDocument();
-                        Paragraph rightAParagraph = new Paragraph();
-                        rightAflowDocument.Blocks.Add(rightAParagraph);
-                        uIClass.rightARichTextBox.Document = rightAflowDocument;
                         Run run = new Run { Text = t, FontSize = dt.rightAInlineTextFontSize[a], Foreground = new SolidColorBrush(dt.rightAInlineTextColor[a]) };
                         if (dt.rightAInlineTextFontWeight[a]) { run.FontWeight = FontWeights.Bold; }
                         rightAParagraph.Inlines.Add(run);
@@ -216,15 +223,15 @@ namespace Unity_Class_Tree
                 uIClass.rightStaticARichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
                 uIClass.rightStaticARichTextBox.GotFocus += ChildrenGotFocus;
                 uIClass.rightStaticARichTextBox.LostFocus += LostFocusClassSaving;
-                FlowDocument rightStaticAflowDocument = new FlowDocument();
-                Paragraph rightStaticAParagraph = new Paragraph();
-                rightStaticAflowDocument.Blocks.Add(rightStaticAParagraph);
-                uIClass.rightStaticARichTextBox.Document = rightStaticAflowDocument;
                 if (dt.rightStaticAInlineText.Count > 0)
                 {
+                    FlowDocument rightStaticAflowDocument = new FlowDocument();
+                    Paragraph rightStaticAParagraph = new Paragraph();
+                    rightStaticAflowDocument.Blocks.Add(rightStaticAParagraph);
+                    uIClass.rightStaticARichTextBox.Document = rightStaticAflowDocument;
                     foreach (string t in dt.rightStaticAInlineText)
                     {
-                        Run run = new Run { Text = t, FontSize = dt.rightAInlineTextFontSize[a], Foreground = new SolidColorBrush(dt.rightStaticAInlineTextColor[a]) };
+                        Run run = new Run { Text = t, FontSize = dt.rightStaticAInlineTextFontSize[a], Foreground = new SolidColorBrush(dt.rightStaticAInlineTextColor[a]) };
                         if (dt.rightStaticAInlineTextFontWeight[a]) { run.FontWeight = FontWeights.Bold; }
                         rightStaticAParagraph.Inlines.Add(run);
                         a++;
@@ -246,12 +253,12 @@ namespace Unity_Class_Tree
                 uIClass.rightConstrRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
                 uIClass.rightConstrRichTextBox.GotFocus += ChildrenGotFocus;
                 uIClass.rightConstrRichTextBox.LostFocus += LostFocusClassSaving;
-                FlowDocument rightConstrflowDocument = new FlowDocument();
-                Paragraph rightConstrParagraph = new Paragraph();
-                rightConstrflowDocument.Blocks.Add(rightConstrParagraph);
-                uIClass.rightConstrRichTextBox.Document = rightConstrflowDocument;
                 if (dt.rightConstrInlineText.Count > 0)
                 {
+                    FlowDocument rightConstrflowDocument = new FlowDocument();
+                    Paragraph rightConstrParagraph = new Paragraph();
+                    rightConstrflowDocument.Blocks.Add(rightConstrParagraph);
+                    uIClass.rightConstrRichTextBox.Document = rightConstrflowDocument;
                     foreach (string t in dt.rightConstrInlineText)
                     {
                         Run run = new Run { Text = t, FontSize = dt.rightConstrInlineTextFontSize[a], Foreground = new SolidColorBrush(dt.rightConstrInlineTextColor[a]) };
@@ -276,12 +283,12 @@ namespace Unity_Class_Tree
                 uIClass.rightMethRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
                 uIClass.rightMethRichTextBox.GotFocus += ChildrenGotFocus;
                 uIClass.rightMethRichTextBox.LostFocus += LostFocusClassSaving;
-                FlowDocument rightMethflowDocument = new FlowDocument();
-                Paragraph rightMethParagraph = new Paragraph();
-                rightMethflowDocument.Blocks.Add(rightMethParagraph);
-                uIClass.rightMethRichTextBox.Document = rightMethflowDocument;
                 if (dt.rightMethInlineText.Count > 0)
                 {
+                    FlowDocument rightMethflowDocument = new FlowDocument();
+                    Paragraph rightMethParagraph = new Paragraph();
+                    rightMethflowDocument.Blocks.Add(rightMethParagraph);
+                    uIClass.rightMethRichTextBox.Document = rightMethflowDocument;
                     foreach (string t in dt.rightMethInlineText)
                     {
                         Run run = new Run { Text = t, FontSize = dt.rightMethInlineTextFontSize[a], Foreground = new SolidColorBrush(dt.rightMethInlineTextColor[a]) };
@@ -307,12 +314,12 @@ namespace Unity_Class_Tree
                 uIClass.rightStaticMethRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
                 uIClass.rightStaticMethRichTextBox.GotFocus += ChildrenGotFocus;
                 uIClass.rightStaticMethRichTextBox.LostFocus += LostFocusClassSaving;
-                FlowDocument rightStaticMethflowDocument = new FlowDocument();
-                Paragraph rightStaticMethParagraph = new Paragraph();
-                rightStaticMethflowDocument.Blocks.Add(rightStaticMethParagraph);
-                uIClass.rightStaticMethRichTextBox.Document = rightStaticMethflowDocument;
                 if (dt.rightStaticMethInlineText.Count > 0)
                 {
+                    FlowDocument rightStaticMethflowDocument = new FlowDocument();
+                    Paragraph rightStaticMethParagraph = new Paragraph();
+                    rightStaticMethflowDocument.Blocks.Add(rightStaticMethParagraph);
+                    uIClass.rightStaticMethRichTextBox.Document = rightStaticMethflowDocument;
                     foreach (string t in dt.rightStaticMethInlineText)
                     {
                         Run run = new Run { Text = t, FontSize = dt.rightStaticMethInlineTextFontSize[a], Foreground = new SolidColorBrush(dt.rightStaticMethInlineTextColor[a]) };
@@ -337,12 +344,12 @@ namespace Unity_Class_Tree
                 uIClass.rightMessageRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
                 uIClass.rightMessageRichTextBox.GotFocus += ChildrenGotFocus;
                 uIClass.rightMessageRichTextBox.LostFocus += LostFocusClassSaving;
-                FlowDocument rightMessageflowDocument = new FlowDocument();
-                Paragraph rightMessageParagraph = new Paragraph();
-                rightMessageflowDocument.Blocks.Add(rightMessageParagraph);
-                uIClass.rightMessageRichTextBox.Document = rightMessageflowDocument;
                 if (dt.rightMessageInlineText.Count > 0)
                 {
+                    FlowDocument rightMessageflowDocument = new FlowDocument();
+                    Paragraph rightMessageParagraph = new Paragraph();
+                    rightMessageflowDocument.Blocks.Add(rightMessageParagraph);
+                    uIClass.rightMessageRichTextBox.Document = rightMessageflowDocument;
                     foreach (string t in dt.rightMessageInlineText)
                     {
                         Run run = new Run { Text = t, FontSize = dt.rightMessageInlineTextFontSize[a], Foreground = new SolidColorBrush(dt.rightMessageInlineTextColor[a]) };
@@ -371,12 +378,12 @@ namespace Unity_Class_Tree
                 uIClass.leftARichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
                 uIClass.leftARichTextBox.GotFocus += ChildrenGotFocus;
                 uIClass.leftARichTextBox.LostFocus += LostFocusClassSaving;
-                FlowDocument leftAflowDocument = new FlowDocument();
-                Paragraph leftAParagraph = new Paragraph();
-                leftAflowDocument.Blocks.Add(leftAParagraph);
-                uIClass.leftARichTextBox.Document = leftAflowDocument;
                 if (dt.leftAInlineText.Count > 0)
                 {
+                    FlowDocument leftAflowDocument = new FlowDocument();
+                    Paragraph leftAParagraph = new Paragraph();
+                    leftAflowDocument.Blocks.Add(leftAParagraph);
+                    uIClass.leftARichTextBox.Document = leftAflowDocument;
                     foreach (string t in dt.leftAInlineText)
                     {
                         Run run = new Run { Text = t, FontSize = dt.leftAInlineTextFontSize[a], Foreground = new SolidColorBrush(dt.leftAInlineTextColor[a]) };
@@ -401,12 +408,12 @@ namespace Unity_Class_Tree
                 uIClass.leftMethRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
                 uIClass.leftMethRichTextBox.GotFocus += ChildrenGotFocus;
                 uIClass.leftMethRichTextBox.LostFocus += LostFocusClassSaving;
-                FlowDocument leftMethflowDocument = new FlowDocument();
-                Paragraph leftMethParagraph = new Paragraph();
-                leftMethflowDocument.Blocks.Add(leftMethParagraph);
-                uIClass.leftMethRichTextBox.Document = leftMethflowDocument;
                 if (dt.leftMethInlineText.Count > 0)
                 {
+                    FlowDocument leftMethflowDocument = new FlowDocument();
+                    Paragraph leftMethParagraph = new Paragraph();
+                    leftMethflowDocument.Blocks.Add(leftMethParagraph);
+                    uIClass.leftMethRichTextBox.Document = leftMethflowDocument;
                     foreach (string t in dt.leftMethInlineText)
                     {
                         Run run = new Run { Text = t, FontSize = dt.leftMethInlineTextFontSize[a], Foreground = new SolidColorBrush(dt.leftMethInlineTextColor[a]) };
@@ -432,12 +439,12 @@ namespace Unity_Class_Tree
                 uIClass.leftStaticMethRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
                 uIClass.leftStaticMethRichTextBox.GotFocus += ChildrenGotFocus;
                 uIClass.leftStaticMethRichTextBox.LostFocus += LostFocusClassSaving;
-                FlowDocument leftStaticMethflowDocument = new FlowDocument();
-                Paragraph leftStaticMethParagraph = new Paragraph();
-                leftStaticMethflowDocument.Blocks.Add(leftStaticMethParagraph);
-                uIClass.leftStaticMethRichTextBox.Document = leftStaticMethflowDocument;
                 if (dt.leftStaticMethInlineText.Count > 0)
                 {
+                    FlowDocument leftStaticMethflowDocument = new FlowDocument();
+                    Paragraph leftStaticMethParagraph = new Paragraph();
+                    leftStaticMethflowDocument.Blocks.Add(leftStaticMethParagraph);
+                    uIClass.leftStaticMethRichTextBox.Document = leftStaticMethflowDocument;
                     foreach (string t in dt.leftStaticMethInlineText)
                     {
                         Run run = new Run { Text = t, FontSize = dt.leftStaticMethInlineTextFontSize[a], Foreground = new SolidColorBrush(dt.leftStaticMethInlineTextColor[a]) };
@@ -522,7 +529,11 @@ namespace Unity_Class_Tree
                     {
                         if (g.Name == NewClassNameTextBox.Text) { bigCanvas.Children.Remove(grids[a]); }
                         a++;
-                    }                    
+                    }   
+                    foreach(string s in allClassesList.ToArray())
+                    {
+                        if (s == NewClassNameTextBox.Text) { allClassesList.Remove(s); }
+                    }
                 }
             }
         }
@@ -544,10 +555,7 @@ namespace Unity_Class_Tree
                     if (YesOrNoParent.parentClassNameForThis != null) { nameOfParent = YesOrNoParent.parentClassNameForThis; }
                 }
             }
-            catch(Exception)
-            {
-
-            }
+            catch(Exception) { }
 
             using (FileStream fs = new FileStream(currentProgramDirectory + "Classes\\" + grid.Name + ".json", FileMode.Create))
             {
@@ -1070,15 +1078,19 @@ namespace Unity_Class_Tree
         private void allClassesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Grid[] grids = bigCanvas.Children.OfType<Grid>().ToArray();
-            foreach(Grid g in grids)
+            try
             {
-                if(g.Name == (sender as ListBox).SelectedItem.ToString())
+                foreach (Grid g in grids)
                 {
-                    Point CanvasElement = new Point((double)g.GetValue(Canvas.LeftProperty), (double)g.GetValue(Canvas.TopProperty));
-                    ScrollViewer1.ScrollToHorizontalOffset(CanvasElement.X);
-                    ScrollViewer1.ScrollToVerticalOffset(CanvasElement.Y);
+                    if (g.Name == (sender as ListBox).SelectedItem.ToString())
+                    {
+                        Point CanvasElement = new Point((double)g.GetValue(Canvas.LeftProperty), (double)g.GetValue(Canvas.TopProperty));
+                        ScrollViewer1.ScrollToHorizontalOffset(CanvasElement.X);
+                        ScrollViewer1.ScrollToVerticalOffset(CanvasElement.Y);
+                    }
                 }
             }
+            catch (Exception) { }
         }
 
         // Устаовка размера канваса с сохранением этого значения в файл
@@ -1087,7 +1099,7 @@ namespace Unity_Class_Tree
             bigCanvas.Width = Convert.ToDouble(bigCanvasSizeTextBox.Text);
             bigCanvas.Height = Convert.ToDouble(bigCanvasSizeTextBox.Text);
             canvasSize = Convert.ToDouble(bigCanvasSizeTextBox.Text);
-            using (FileStream fs = new FileStream(currentProgramDirectory + "Canvas Size.json", FileMode.Create))
+            using (FileStream fs = new FileStream(currentProgramDirectory + "CanvasSize.json", FileMode.Create))
             {
                 DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(double));
                 jsonSerializer.WriteObject(fs, canvasSize);
