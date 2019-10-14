@@ -29,10 +29,11 @@ namespace Unity_Class_Tree
         Point currentCanvasPointClass = new Point(0, 0);
         ObservableCollection<string> allClassesList = new ObservableCollection<string>();
         public double canvasSize;
-        public int backup;
+        public int backupDirectoryNumber = 1;
         public string currentClassName = "";
         public string classParentName = "";
         public string nameOfParent = "";
+        public string currentProgramDirectory;
         bool GetMouseClass = false;
         bool GetMouseCanvas = false;
         public MainWindow()
@@ -45,50 +46,54 @@ namespace Unity_Class_Tree
         // Backup всех файлов классов, раз в 5 запусков программы, в папку "D:\\Programming\\My Projects\\Unity Class Tree\\Classes\\"
         public void SaveBackup()
         {
-            if (File.Exists("D:\\Unity Class Tree\\BackupSave.json"))
+            currentProgramDirectory = Directory.GetCurrentDirectory() + "\\";
+
+            if (File.Exists(currentProgramDirectory + "BackupSaveNumber.json")) // Если существует файл BackupSaveNumber.json, в котором хранится число backup-ов, то загрузить из него это число в переменную backupDirectoryNumber
             {
-                using (FileStream fs = new FileStream("D:\\Unity Class Tree\\BackupSave.json", FileMode.Open))
+                using (FileStream fs = new FileStream(currentProgramDirectory + "BackupSaveNumber.json", FileMode.Open))
                 {
                     DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(int));
-                    backup = (int)jsonSerializer.ReadObject(fs);
+                    backupDirectoryNumber = (int)jsonSerializer.ReadObject(fs);
                 }
             }
-            else { MessageBox.Show("Файл 'BackuoSave' удален!!!"); }
-            backup++;
-            if(backup == 5)
-            {
-                backup = 0;
-                string[] backupAllFiles = Directory.GetFiles("D:\\Unity Class Tree\\Classes");
-                foreach(string s in backupAllFiles)
-                {
+            else { MessageBox.Show("Файл 'BackupSaveNumber' удален!!!"); }
 
-                    File.Copy(s, "D:\\Programming\\My Projects\\Unity Class Tree\\Classes\\" + s.Replace("D:\\Unity Class Tree\\Classes\\", "") + ".json" );
-                    backup++;
-                }
-                backup = 0;
-            }
-            using (FileStream fs2 = new FileStream("D:\\Unity Class Tree\\BackupSave.json", FileMode.Create))
+            if (backupDirectoryNumber == 11) { backupDirectoryNumber = 1; }  // Если число backup-ов достигло больше 10 (т.е. 10-ый тоже есть), тогда обнулить его до 1
+
+            if (Directory.Exists("D:\\Programming\\My Projects\\Unity Class Tree\\ClassBackups\\Backup" + backupDirectoryNumber.ToString() + "\\")) // Если директория уже существует, тогда удалить ее и все ее содержимое
             {
+                Directory.Delete("D:\\Programming\\My Projects\\Unity Class Tree\\ClassBackups\\Backup" + backupDirectoryNumber.ToString() + "\\", true);
+            }
+            Directory.CreateDirectory("D:\\Programming\\My Projects\\Unity Class Tree\\ClassBackups\\Backup" + backupDirectoryNumber.ToString() + "\\"); // Создать директорию с указанным числом
+
+            string[] backupAllFiles = Directory.GetFiles(currentProgramDirectory + "Classes");  // Получить список всех файлов классов из папки программы
+            foreach (string s in backupAllFiles)
+            {
+                File.Copy(s, "D:\\Programming\\My Projects\\Unity Class Tree\\ClassBackups\\Backup" + backupDirectoryNumber.ToString() + "\\" + s.Replace("D:\\Unity Class Tree\\Classes\\", "")); // Забыкапить каждый файл класса программы в указанное место
+            }
+            using (FileStream fs2 = new FileStream(currentProgramDirectory + "BackupSaveNumber.json", FileMode.Create)) // Сохранить увеличенное на еденицу значение backup-а
+            {
+                backupDirectoryNumber++;
                 DataContractJsonSerializer jsonSerializer2 = new DataContractJsonSerializer(typeof(int));
-                jsonSerializer2.WriteObject(fs2, backup);
+                jsonSerializer2.WriteObject(fs2, backupDirectoryNumber);
             }
         }
 
         // Загрузка всех классов (из папки "Classes") на холст
         public void LoadAllClasses()
         {
-            if (Directory.Exists("D:\\Unity Class Tree"))
+            if (Directory.Exists(currentProgramDirectory))
             {
-                if(File.Exists("D:\\Unity Class Tree\\Canvas Size.json"))
+                if(File.Exists(currentProgramDirectory + "Canvas Size.json"))
                 {
-                    using (FileStream fs = new FileStream("D:\\Unity Class Tree\\Canvas Size.json", FileMode.Open))
+                    using (FileStream fs = new FileStream(currentProgramDirectory + "Canvas Size.json", FileMode.Open))
                     {
                         DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(double));
                         canvasSize = (double)jsonSerializer.ReadObject(fs);
                     }
                 }
                 RoutedEventArgs e = new RoutedEventArgs();
-                string[] allClassFiles = Directory.GetFiles("D:\\Unity Class Tree\\Classes");
+                string[] allClassFiles = Directory.GetFiles(currentProgramDirectory + "Classes");
                 foreach (string s in allClassFiles)
                 {
                     using (FileStream fs2 = new FileStream(s, FileMode.Open))
@@ -101,7 +106,7 @@ namespace Unity_Class_Tree
                         }
                         catch (Exception) { MessageBox.Show("Проблемы с файлом: " + s); }
                     }
-                    string classNameInAllClassesList = s.Replace("D:\\Unity Class Tree\\Classes\\", "");
+                    string classNameInAllClassesList = s.Replace(currentProgramDirectory + "Classes\\", "");
                     classNameInAllClassesList = classNameInAllClassesList.Replace(".json", "");
                     allClassesList.Add(classNameInAllClassesList);
                 }
@@ -122,7 +127,7 @@ namespace Unity_Class_Tree
             }
             else
             {
-                if (File.Exists("D:\\Unity Class Tree\\Classes\\" + NewClassNameTextBox.Text + ".json")) { MessageBox.Show("Класс с таким именем уже создан."); } // Проверка введенного нового имени класса. Если такое имя уже есть, не создаст класс
+                if (File.Exists(currentProgramDirectory + "Classes\\" + NewClassNameTextBox.Text + ".json")) { MessageBox.Show("Класс с таким именем уже создан."); } // Проверка введенного нового имени класса. Если такое имя уже есть, не создаст класс
                 else
                 {
                     //___CREATE DataClass OBJECT___
@@ -130,7 +135,7 @@ namespace Unity_Class_Tree
                     dt.className = NewClassNameTextBox.Text;
 
                     // Создание файла (в папке) для этого класса
-                    using (FileStream fs = new FileStream("D:\\Unity Class Tree\\Classes\\" + dt.className + ".json", FileMode.Create))
+                    using (FileStream fs = new FileStream(currentProgramDirectory + "Classes\\" + dt.className + ".json", FileMode.Create))
                     {
                         DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(DataClass));
                         jsonSerializer.WriteObject(fs, dt);
@@ -479,10 +484,10 @@ namespace Unity_Class_Tree
                 Canvas.SetLeft(uIClass.classGrid, dt.canvasPointClass.X);
                 Canvas.SetTop(uIClass.classGrid, dt.canvasPointClass.Y);
 
-                string[] allClasses = Directory.GetFiles("D:\\Unity Class Tree\\Classes"); // Список всех классов в папке Classes
+                string[] allClasses = Directory.GetFiles(currentProgramDirectory + "Classes"); // Список всех классов в папке Classes
                 foreach (string s in allClasses) // Загрузка положения родителя на холсте, чтобы нарисовать линию от дочернего класса
                 {
-                    if (s == "D:\\Unity Class Tree\\Classes\\" + dt.parentClassNameForThis + ".json") // Находится файл с именем родительского класса
+                    if (s == currentProgramDirectory + "Classes\\" + dt.parentClassNameForThis + ".json") // Находится файл с именем родительского класса
                     {
                         using (FileStream fs = new FileStream(s, FileMode.Open))
                         {
@@ -506,12 +511,12 @@ namespace Unity_Class_Tree
         // Удаление класса по его имени
         private void DeleteClass(object sender, RoutedEventArgs e)
         {
-            if(File.Exists("D://Unity Class Tree//Classes//" + NewClassNameTextBox.Text + ".json"))
+            if(File.Exists(currentProgramDirectory + "Classes//" + NewClassNameTextBox.Text + ".json"))
             {
                 if (MessageBox.Show("Are you sure you want to delete this class?", "Deleting the class", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
                     int a = 0;
-                    File.Delete("D://Unity Class Tree//Classes//" + NewClassNameTextBox.Text + ".json");
+                    File.Delete(currentProgramDirectory + "Classes//" + NewClassNameTextBox.Text + ".json");
                     Grid[] grids = bigCanvas.Children.OfType<Grid>().ToArray();
                     foreach(Grid g in grids)
                     {
@@ -532,7 +537,7 @@ namespace Unity_Class_Tree
             }
             try
             {
-                using (FileStream fs2 = new FileStream("D:\\Unity Class Tree\\Classes\\" + grid.Name + ".json", FileMode.Open)) // Проверяет, был -ли у вызывающего этот метод класса родитель, записанный в свойстве parentClassNameForThis
+                using (FileStream fs2 = new FileStream(currentProgramDirectory + "Classes\\" + grid.Name + ".json", FileMode.Open)) // Проверяет, был -ли у вызывающего этот метод класса родитель, записанный в свойстве parentClassNameForThis
                 {
                     DataContractJsonSerializer jsonSerializer2 = new DataContractJsonSerializer(typeof(DataClass));
                     DataClass YesOrNoParent = (DataClass)jsonSerializer2.ReadObject(fs2);
@@ -544,7 +549,7 @@ namespace Unity_Class_Tree
 
             }
 
-            using (FileStream fs = new FileStream("D:\\Unity Class Tree\\Classes\\" + grid.Name + ".json", FileMode.Create))
+            using (FileStream fs = new FileStream(currentProgramDirectory + "Classes\\" + grid.Name + ".json", FileMode.Create))
             {
                 rtb = sender as RichTextBox;
                 DataClass dataClassSaving = new DataClass();
@@ -805,10 +810,10 @@ namespace Unity_Class_Tree
                 mousePosClassCanvasOld.Y = mousePosClassCanvasNew.Y;
 
                 DataClass ExampleClass = new DataClass();
-                string[] allClasses = Directory.GetFiles("D:\\Unity Class Tree\\Classes");
+                string[] allClasses = Directory.GetFiles(currentProgramDirectory + "Classes");
                 foreach (string s in allClasses)
                 {
-                    if (s == "D:\\Unity Class Tree\\Classes\\" + TakeClassGrid.Name + ".json") // Находится файл с именем перемещаемого класса
+                    if (s == currentProgramDirectory + "Classes\\" + TakeClassGrid.Name + ".json") // Находится файл с именем перемещаемого класса
                     {
                         using (FileStream fs = new FileStream(s, FileMode.Open))
                         {
@@ -828,7 +833,7 @@ namespace Unity_Class_Tree
                 {
                     foreach (string s in allClasses) // Тогда найти этого родителя, а у него найти его координаты
                     {
-                        if (s == "D:\\Unity Class Tree\\Classes\\" + ExampleClass.parentClassNameForThis + ".json")
+                        if (s == currentProgramDirectory + "Classes\\" + ExampleClass.parentClassNameForThis + ".json")
                         {
                             using (FileStream fs = new FileStream(s, FileMode.Open))
                             {
@@ -996,13 +1001,13 @@ namespace Unity_Class_Tree
             if(SecondClassGrid != null)
             {
                 DataClass deleteConnectionParent = new DataClass();
-                using (FileStream fs = new FileStream("D:\\Unity Class Tree\\Classes\\" + SecondClassGrid.Name + ".json", FileMode.Open))
+                using (FileStream fs = new FileStream(currentProgramDirectory + "Classes\\" + SecondClassGrid.Name + ".json", FileMode.Open))
                 {
                     DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(DataClass));
                     deleteConnectionParent = (DataClass)jsonSerializer.ReadObject(fs); // Загружается файл дочернего класса, чтобы удалить наследование
                     deleteConnectionParent.parentClassNameForThis = null;
                 }
-                using (FileStream fs2 = new FileStream("D:\\Unity Class Tree\\Classes\\" + SecondClassGrid.Name + ".json", FileMode.Create))
+                using (FileStream fs2 = new FileStream(currentProgramDirectory + "Classes\\" + SecondClassGrid.Name + ".json", FileMode.Create))
                 {
                     DataContractJsonSerializer jsonSerializer2 = new DataContractJsonSerializer(typeof(DataClass));
                     jsonSerializer2.WriteObject(fs2, deleteConnectionParent);
@@ -1082,7 +1087,7 @@ namespace Unity_Class_Tree
             bigCanvas.Width = Convert.ToDouble(bigCanvasSizeTextBox.Text);
             bigCanvas.Height = Convert.ToDouble(bigCanvasSizeTextBox.Text);
             canvasSize = Convert.ToDouble(bigCanvasSizeTextBox.Text);
-            using (FileStream fs = new FileStream("D:\\Unity Class Tree\\Canvas Size.json", FileMode.Create))
+            using (FileStream fs = new FileStream(currentProgramDirectory + "Canvas Size.json", FileMode.Create))
             {
                 DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(double));
                 jsonSerializer.WriteObject(fs, canvasSize);
