@@ -98,5 +98,7 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
+        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,20,0" FontSize="16" Foreground="White" 
+                   Opacity="0.5">press ALT+W to switch view</TextBlock>
     </Grid>
 </Window>
