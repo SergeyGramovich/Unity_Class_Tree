@@ -18,8 +18,8 @@
     </Window.InputBindings>
     
     <Grid>
-        <ScrollViewer x:Name="ScrollViewer1" HorizontalAlignment="Left" Visibility="Visible" VerticalScrollBarVisibility="Hidden" 
-                      HorizontalScrollBarVisibility="Hidden" Width="1916">
+        <ScrollViewer x:Name="ScrollViewer1" HorizontalAlignment="Left" Visibility="Visible" VerticalScrollBarVisibility="Hidden"
+                      HorizontalScrollBarVisibility="Hidden" Width="1916" PreviewMouseWheel="ScrollViewer1_PreviewMouseWheel">
             <Grid Name="canvasGrid">
                 <Canvas Name="bigCanvas" Background="#b2b2b2" MouseLeftButtonDown="canvas_MouseLeftButtonDown"
                     MouseLeftButtonUp="canvas_MouseLeftButtonUp" MouseMove="canvas_MouseMove">

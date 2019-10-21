@@ -75,7 +75,7 @@ namespace Unity_Class_Tree
                 className = className.Replace("\\", "");
                 Directory.CreateDirectory("D:\\Programming\\My Projects\\Unity Class Tree\\ClassBackups\\Backup" + backupDirectoryNumber.ToString() + "\\" + className); // Создание папки класса
                 string[] allClassFiles = Directory.GetFiles(currentProgramDirectory + "Classes" + "\\" + className + "\\"); // Получение всех файлов из папки класса
-                foreach(string s2 in allClassFiles) // Копирование всех файлов класса
+                foreach (string s2 in allClassFiles) // Копирование всех файлов класса
                 {
                     File.Copy(s2, "D:\\Programming\\My Projects\\Unity Class Tree\\ClassBackups\\Backup" + backupDirectoryNumber.ToString() + "\\" + className + "\\" + s2.Replace(currentProgramDirectory + "Classes" + "\\" + className + "\\", "")); // Бэкап каждого файла каждого класса
                 }
@@ -142,297 +142,303 @@ namespace Unity_Class_Tree
         // Создание нового класса
         private void CreateNewClass(object sender, RoutedEventArgs e)
         {
-                DataClass dt = new DataClass();
-                bool createOreLoadNewClass = false;
-                if (sender.GetType().ToString() == "Unity_Class_Tree.DataClass") // Этот вариант работает когда программа загружается, т.е. после метода LoadAllClasses(). проще говоря, здесь принимается класс из файла класса
+            DataClass dt = new DataClass();
+            bool createOreLoadNewClass = false;
+            if (sender.GetType().ToString() == "Unity_Class_Tree.DataClass") // Этот вариант работает когда программа загружается, т.е. после метода LoadAllClasses(). проще говоря, здесь принимается класс из файла класса
+            {
+                dt = sender as DataClass;
+                NewClassNameTextBox.Text = dt.className;
+                createOreLoadNewClass = true;
+                allClassesList.Add(NewClassNameTextBox.Text);
+                allClassesList = new ObservableCollection<string>(allClassesList.OrderBy(a => a));
+                allClassesListBox.ItemsSource = allClassesList2;
+                allClassesListBox.ItemsSource = allClassesList;
+            }
+            else // Этот вариант работает когда нажимается кнопка CreateNewClass. Здесь создается новый, пустой объект
+            {
+                NewClassNameTextBox.Text = NewClassNameTextBox.Text.Replace(" ", "");
+                if (NewClassNameTextBox.Text == "" || NewClassNameTextBox.Text == "NewClassName" || Regex.IsMatch(NewClassNameTextBox.Text.ToCharArray()[0].ToString(), @"[^a-zA-Z]")) // Если введенная строка равна пустоте, или равна "NewClassName" или первый символ равен не букве (маленькой и большой), тогда не пускать дальше
                 {
-                    dt = sender as DataClass;
-                    NewClassNameTextBox.Text = dt.className;
-                    createOreLoadNewClass = true;
-                    allClassesList.Add(NewClassNameTextBox.Text);
-                    allClassesList = new ObservableCollection<string>(allClassesList.OrderBy(a => a));
-                    allClassesListBox.ItemsSource = allClassesList2;
-                    allClassesListBox.ItemsSource = allClassesList;
+                    MessageBox.Show("Please, enter the name of a new class. it should begin only with a letter (small or big) and It cannot contain spaces");
                 }
-                else // Этот вариант работает когда нажимается кнопка CreateNewClass. Здесь создается новый, пустой объект
+                else
                 {
-                    NewClassNameTextBox.Text = NewClassNameTextBox.Text.Replace(" ", "");
-                    if (NewClassNameTextBox.Text == "" || NewClassNameTextBox.Text == "NewClassName" || Regex.IsMatch(NewClassNameTextBox.Text.ToCharArray()[0].ToString(), @"[^a-zA-Z]")) // Если введенная строка равна пустоте, или равна "NewClassName" или первый символ равен не букве (маленькой и большой), тогда не пускать дальше
-                    {
-                        MessageBox.Show("Please, enter the name of a new class. it should begin only with a letter (small or big) and It cannot contain spaces");
-                    }
+                    if (Directory.Exists(currentProgramDirectory + "Classes\\" + NewClassNameTextBox.Text)) { MessageBox.Show("Класс с таким именем уже создан."); } // Проверка введенного нового имени класса. Если такое имя уже есть, не создаст класс
                     else
                     {
-                        if (Directory.Exists(currentProgramDirectory + "Classes\\" + NewClassNameTextBox.Text)) { MessageBox.Show("Класс с таким именем уже создан."); } // Проверка введенного нового имени класса. Если такое имя уже есть, не создаст класс
-                        else
-                        {
-                            //___CREATE DataClass OBJECT___
-                            dt = new DataClass();
-                            dt.className = NewClassNameTextBox.Text;
-                            allClassesList.Add(NewClassNameTextBox.Text);
-                            allClassesList = new ObservableCollection<string>(allClassesList.OrderBy(a => a));
-                            allClassesListBox.ItemsSource = allClassesList2;
-                            allClassesListBox.ItemsSource = allClassesList;
+                        //___CREATE DataClass OBJECT___
+                        dt = new DataClass();
+                        dt.className = NewClassNameTextBox.Text;
+                        allClassesList.Add(NewClassNameTextBox.Text);
+                        allClassesList = new ObservableCollection<string>(allClassesList.OrderBy(a => a));
+                        allClassesListBox.ItemsSource = allClassesList2;
+                        allClassesListBox.ItemsSource = allClassesList;
 
-                            // Создание директории для этого класса
-                            Directory.CreateDirectory(currentProgramDirectory + "Classes\\" + NewClassNameTextBox.Text);
-                            using (FileStream fs = new FileStream(currentProgramDirectory + "Classes\\" + NewClassNameTextBox.Text + "\\" + dt.className + ".json", FileMode.Create))
-                            {
-                                DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(DataClass));
-                                jsonSerializer.WriteObject(fs, dt);
-                            }
-                            createOreLoadNewClass = true;
+                        // Создание директории для этого класса
+                        Directory.CreateDirectory(currentProgramDirectory + "Classes\\" + NewClassNameTextBox.Text);
+                        using (FileStream fs = new FileStream(currentProgramDirectory + "Classes\\" + NewClassNameTextBox.Text + "\\" + dt.className + ".json", FileMode.Create))
+                        {
+                            DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(DataClass));
+                            jsonSerializer.WriteObject(fs, dt);
                         }
+                        createOreLoadNewClass = true;
                     }
                 }
+            }
 
-                if (createOreLoadNewClass)
+            if (createOreLoadNewClass)
+            {
+                //___CREATE UIClass OBJECT___
+
+                UIClass uIClass = new UIClass();
+
+                // classGrid
+                uIClass.classGrid = new Grid { Name = NewClassNameTextBox.Text.ToString(), Tag = "", Width = 400, Height = 109, Background = new SolidColorBrush(Color.FromRgb(108, 108, 109)) };
+                uIClass.classGrid.MouseLeftButtonDown += GridMouseLeftButtonDown;
+                uIClass.classGrid.MouseLeftButtonUp += GridMouseLeftButtonUp;
+                uIClass.classGrid.MouseMove += GridMouseMove;
+                // classBorders
+                uIClass.classBorderWhite = new Border { Name = "classBorderWhite", Width = 300, Height = 50, Background = new SolidColorBrush(Colors.White), CornerRadius = new CornerRadius(6), VerticalAlignment = VerticalAlignment.Center, BorderBrush = new SolidColorBrush(Color.FromRgb(65, 65, 65)), BorderThickness = new Thickness(2), Margin = new Thickness(0, 0, 0, 22) };
+                // classDescriptionButton
+                uIClass.classDescriptionButton = new Button { Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), Foreground = new SolidColorBrush(Color.FromRgb(43, 175, 62)), BorderBrush = new SolidColorBrush(Color.FromRgb(65, 65, 65)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(0, 0, 0, 88), Content = "???" };
+                uIClass.classDescriptionButton.Click += OpenHideClassDescriptionTextBoxMethod;
+                // 2 classTextboxes
+                uIClass.classNameTextBlock = new TextBlock { Name = "classNameTextBlock", Width = 296, FontSize = 19, VerticalAlignment = VerticalAlignment.Center, TextAlignment = TextAlignment.Center, Foreground = new SolidColorBrush(Color.FromRgb(43, 145, 175)), Margin = new Thickness(0, 0, 0, 22), Text = dt.className };
+                uIClass.classNameTextBlock.GotFocus += ChildrenGotFocus;
+                uIClass.classDescriptionTextBox = new TextBox { Name = "classDescriptionTextBox", FontFamily = new FontFamily("Calibri"), Width = 296, Height = 140, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(52, -140, 52, 110), Visibility = Visibility.Collapsed, Text = dt.classDescription, AcceptsReturn = true, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+                uIClass.classDescriptionTextBox.GotFocus += ChildrenGotFocus;
+                uIClass.classDescriptionTextBox.LostFocus += LostFocusClassSaving;
+
+                // Right
+
+                // right A
+                uIClass.rightACheckBox = new CheckBox { Name = "rightA", Width = 16, Height = 16, Margin = new Thickness(320, 0, 0, 88), IsChecked = dt.rightADataClassCheckBox, Opacity = 0.4 };
+                uIClass.rightACheckBox.GotFocus += ChildrenGotFocus;
+                uIClass.rightACheckBox.Click += OpenHideButtonsMethod;
+                uIClass.rightACheckBox.Click += LostFocusClassSaving;
+                Grid rightAButtonContentGrid = new Grid();
+                rightAButtonContentGrid.Children.Add(new TextBlock { Foreground = new SolidColorBrush(Color.FromRgb(40, 80, 252)), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 10, 0), Text = "int" });
+                rightAButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "a" });
+                uIClass.rightAButton = new Button { Name = "rightA", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(370, 3, -30, 91), Content = rightAButtonContentGrid };
+                if (dt.rightADataClassCheckBox != true) { uIClass.rightAButton.Visibility = Visibility.Collapsed; }
+                uIClass.rightAButton.GotFocus += ChildrenGotFocus;
+                uIClass.rightAButton.Click += OpenHideRichTextBoxesMethod;
+                uIClass.rightARichTextBox = new RichTextBox { Name = "rightARichTextBox", Width = 600, Height = 500, FontSize = 12, AcceptsTab = true, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -120, -630, -518), Visibility = Visibility.Collapsed, FontStyle = FontStyles.Normal, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+                uIClass.rightARichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
+                uIClass.rightARichTextBox.GotFocus += ChildrenGotFocus;
+                uIClass.rightARichTextBox.LostFocus += SaveRichTextBoxLostFocus;
+
+                // right Static A
+                uIClass.rightStaticACheckBox = new CheckBox { Name = "rightStaticA", Width = 16, Height = 16, Margin = new Thickness(320, 0, 0, 56), IsChecked = dt.rightStaticADataClassCheckBox, Opacity = 0.4 };
+                uIClass.rightStaticACheckBox.GotFocus += ChildrenGotFocus;
+                uIClass.rightStaticACheckBox.Click += OpenHideButtonsMethod;
+                uIClass.rightStaticACheckBox.Click += LostFocusClassSaving;
+                uIClass.rightStaticACheckBox.Click += LostFocusClassSaving;
+                Grid rightStaticAButtonContentGrid = new Grid();
+                rightStaticAButtonContentGrid.Children.Add(new TextBlock { Foreground = new SolidColorBrush(Color.FromRgb(40, 80, 252)), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 10, 0), Text = "static int" });
+                rightStaticAButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "a" });
+                uIClass.rightStaticAButton = new Button { Name = "rightStaticA", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(370, 19, -30, 75), Content = rightStaticAButtonContentGrid };
+                if (dt.rightStaticADataClassCheckBox != true) { uIClass.rightStaticAButton.Visibility = Visibility.Collapsed; }
+                uIClass.rightStaticAButton.GotFocus += ChildrenGotFocus;
+                uIClass.rightStaticAButton.Click += OpenHideRichTextBoxesMethod;
+                uIClass.rightStaticARichTextBox = new RichTextBox { Name = "rightStaticARichTextBox", Width = 600, Height = 500, FontSize = 12, AcceptsTab = true, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -110, -630, -540), Visibility = Visibility.Collapsed, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+                uIClass.rightStaticARichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
+                uIClass.rightStaticARichTextBox.GotFocus += ChildrenGotFocus;
+                uIClass.rightStaticARichTextBox.LostFocus += SaveRichTextBoxLostFocus;
+
+                // right Constr
+                uIClass.rightConstrCheckBox = new CheckBox { Name = "rightConstr", Width = 16, Height = 16, Margin = new Thickness(320, 0, 0, 18), IsChecked = dt.rightConstrDataClassCheckBox, Opacity = 0.4 };
+                uIClass.rightConstrCheckBox.GotFocus += ChildrenGotFocus;
+                uIClass.rightConstrCheckBox.Click += OpenHideButtonsMethod;
+                uIClass.rightConstrCheckBox.Click += LostFocusClassSaving;
+                Grid rightConstrButtonContentGrid = new Grid();
+                rightConstrButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "Constr()" });
+                uIClass.rightConstrButton = new Button { Name = "rightConstr", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(370, 38, -30, 56), Content = rightConstrButtonContentGrid };
+                if (dt.rightConstrDataClassCheckBox != true) { uIClass.rightConstrButton.Visibility = Visibility.Collapsed; }
+                uIClass.rightConstrButton.GotFocus += ChildrenGotFocus;
+                uIClass.rightConstrButton.Click += OpenHideRichTextBoxesMethod;
+                uIClass.rightConstrRichTextBox = new RichTextBox { Name = "rightConstrRichTextBox", Width = 600, Height = 500, FontSize = 12, AcceptsTab = true, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -90, -630, -558), Visibility = Visibility.Collapsed, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+                uIClass.rightConstrRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
+                uIClass.rightConstrRichTextBox.GotFocus += ChildrenGotFocus;
+                uIClass.rightConstrRichTextBox.LostFocus += SaveRichTextBoxLostFocus;
+
+                // right Meth
+                uIClass.rightMethCheckBox = new CheckBox { Name = "rightMeth", Width = 16, Height = 16, Margin = new Thickness(320, 20, 0, 0), IsChecked = dt.rightMethDataClassCheckBox, Opacity = 0.4 };
+                uIClass.rightMethCheckBox.GotFocus += ChildrenGotFocus;
+                uIClass.rightMethCheckBox.Click += OpenHideButtonsMethod;
+                uIClass.rightMethCheckBox.Click += LostFocusClassSaving;
+                Grid rightMethButtonContentGrid = new Grid();
+                rightMethButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "Meth()" });
+                uIClass.rightMethButton = new Button { Name = "rightMeth", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(370, 57, -30, 37), Content = rightMethButtonContentGrid };
+                if (dt.rightMethDataClassCheckBox != true) { uIClass.rightMethButton.Visibility = Visibility.Collapsed; }
+                uIClass.rightMethButton.GotFocus += ChildrenGotFocus;
+                uIClass.rightMethButton.Click += OpenHideRichTextBoxesMethod;
+                uIClass.rightMethRichTextBox = new RichTextBox { Name = "rightMethRichTextBox", Width = 600, Height = 500, FontSize = 12, AcceptsTab = true, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -66, -630, -572), Visibility = Visibility.Collapsed, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+                uIClass.rightMethRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
+                uIClass.rightMethRichTextBox.GotFocus += ChildrenGotFocus;
+                uIClass.rightMethRichTextBox.LostFocus += SaveRichTextBoxLostFocus;
+
+                // right StaticMeth
+                uIClass.rightStaticMethCheckBox = new CheckBox { Name = "rightStaticMeth", Width = 16, Height = 16, Margin = new Thickness(320, 52, 0, 0), IsChecked = dt.rightStaticMethDataClassCheckBox, Opacity = 0.4 };
+                uIClass.rightStaticMethCheckBox.GotFocus += ChildrenGotFocus;
+                uIClass.rightStaticMethCheckBox.Click += OpenHideButtonsMethod;
+                uIClass.rightStaticMethCheckBox.Click += LostFocusClassSaving;
+                Grid rightStaticMethButtonContentGrid = new Grid();
+                rightStaticMethButtonContentGrid.Children.Add(new TextBlock { Foreground = new SolidColorBrush(Color.FromRgb(40, 80, 252)), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 32, 0), Text = "static" });
+                rightStaticMethButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "Meth()" });
+                uIClass.rightStaticMethButton = new Button { Name = "rightStaticMeth", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(370, 73, -30, 21), Content = rightStaticMethButtonContentGrid };
+                if (dt.rightStaticMethDataClassCheckBox != true) { uIClass.rightStaticMethButton.Visibility = Visibility.Collapsed; }
+                uIClass.rightStaticMethButton.GotFocus += ChildrenGotFocus;
+                uIClass.rightStaticMethButton.Click += OpenHideRichTextBoxesMethod;
+                uIClass.rightStaticMethRichTextBox = new RichTextBox { Name = "rightStaticMethRichTextBox", Width = 600, Height = 500, FontSize = 12, AcceptsTab = true, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -50, -630, -588), Visibility = Visibility.Collapsed, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+                uIClass.rightStaticMethRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
+                uIClass.rightStaticMethRichTextBox.GotFocus += ChildrenGotFocus;
+                uIClass.rightStaticMethRichTextBox.LostFocus += SaveRichTextBoxLostFocus;
+
+                // right Message
+                uIClass.rightMessageCheckBox = new CheckBox { Name = "rightMessage", Width = 16, Height = 16, Margin = new Thickness(320, 90, 0, 0), IsChecked = dt.rightMessageDataClassCheckBox, Opacity = 0.4 };
+                uIClass.rightMessageCheckBox.GotFocus += ChildrenGotFocus;
+                uIClass.rightMessageCheckBox.Click += OpenHideButtonsMethod;
+                uIClass.rightMessageCheckBox.Click += LostFocusClassSaving;
+                Grid rightMessageButtonContentGrid = new Grid();
+                rightMessageButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "Message()" });
+                uIClass.rightMessageButton = new Button { Name = "rightMessage", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(370, 92, -30, 2), Content = rightMessageButtonContentGrid };
+                if (dt.rightMessageDataClassCheckBox != true) { uIClass.rightMessageButton.Visibility = Visibility.Collapsed; }
+                uIClass.rightMessageButton.GotFocus += ChildrenGotFocus;
+                uIClass.rightMessageButton.Click += OpenHideRichTextBoxesMethod;
+                uIClass.rightMessageRichTextBox = new RichTextBox { Name = "rightMessageRichTextBox", Width = 600, Height = 500, FontSize = 12, AcceptsTab = true, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -30, -630, -606), Visibility = Visibility.Collapsed, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+                uIClass.rightMessageRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
+                uIClass.rightMessageRichTextBox.GotFocus += ChildrenGotFocus;
+                uIClass.rightMessageRichTextBox.LostFocus += SaveRichTextBoxLostFocus;
+
+                // Left
+
+                // left A
+                uIClass.leftACheckBox = new CheckBox { Name = "leftA", Width = 16, Height = 16, Margin = new Thickness(0, 0, 320, 88), IsChecked = dt.leftADataClassCheckBox, Opacity = 0.4 };
+                uIClass.leftACheckBox.GotFocus += ChildrenGotFocus;
+                uIClass.leftACheckBox.Click += OpenHideButtonsMethod;
+                uIClass.leftACheckBox.Click += LostFocusClassSaving;
+                Grid leftAButtonContentGrid = new Grid();
+                leftAButtonContentGrid.Children.Add(new TextBlock { Foreground = new SolidColorBrush(Color.FromRgb(40, 80, 252)), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 10, 0), Text = "int" });
+                leftAButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "a" });
+                uIClass.leftAButton = new Button { Name = "leftA", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(65, 89, 196)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(-30, 3, 370, 91), Content = leftAButtonContentGrid };
+                if (dt.leftADataClassCheckBox != true) { uIClass.leftAButton.Visibility = Visibility.Collapsed; }
+                uIClass.leftAButton.GotFocus += ChildrenGotFocus;
+                uIClass.leftAButton.Click += OpenHideRichTextBoxesMethod;
+                uIClass.leftARichTextBox = new RichTextBox { Name = "leftARichTextBox", Width = 600, Height = 500, FontSize = 12, AcceptsTab = true, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(-630, -120, 430, -518), Visibility = Visibility.Collapsed, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+                uIClass.leftARichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
+                uIClass.leftARichTextBox.GotFocus += ChildrenGotFocus;
+                uIClass.leftARichTextBox.LostFocus += SaveRichTextBoxLostFocus;
+
+                // left Meth
+                uIClass.leftMethCheckBox = new CheckBox { Name = "leftMeth", Width = 16, Height = 16, Margin = new Thickness(0, 20, 320, 0), IsChecked = dt.leftMethDataClassCheckBox, Opacity = 0.4 };
+                uIClass.leftMethCheckBox.GotFocus += ChildrenGotFocus;
+                uIClass.leftMethCheckBox.Click += OpenHideButtonsMethod;
+                uIClass.leftMethCheckBox.Click += LostFocusClassSaving;
+                Grid leftMethButtonContentGrid = new Grid();
+                leftMethButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "Meth()" });
+                uIClass.leftMethButton = new Button { Name = "leftMeth", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(65, 89, 196)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(-30, 57, 370, 37), Content = leftMethButtonContentGrid };
+                if (dt.leftMethDataClassCheckBox != true) { uIClass.leftMethButton.Visibility = Visibility.Collapsed; }
+                uIClass.leftMethButton.GotFocus += ChildrenGotFocus;
+                uIClass.leftMethButton.Click += OpenHideRichTextBoxesMethod;
+                uIClass.leftMethRichTextBox = new RichTextBox { Name = "leftMethRichTextBox", Width = 600, Height = 500, FontSize = 12, AcceptsTab = true, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(-630, -66, 430, -572), Visibility = Visibility.Collapsed, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+                uIClass.leftMethRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
+                uIClass.leftMethRichTextBox.GotFocus += ChildrenGotFocus;
+                uIClass.leftMethRichTextBox.LostFocus += SaveRichTextBoxLostFocus;
+
+                // left Static Meth
+                uIClass.leftStaticMethCheckBox = new CheckBox { Name = "leftStaticMeth", Width = 16, Height = 16, Margin = new Thickness(0, 52, 320, 0), IsChecked = dt.leftStaticMethDataClassCheckBox, Opacity = 0.4 };
+                uIClass.leftStaticMethCheckBox.GotFocus += ChildrenGotFocus;
+                uIClass.leftStaticMethCheckBox.Click += OpenHideButtonsMethod;
+                uIClass.leftStaticMethCheckBox.Click += LostFocusClassSaving;
+                Grid leftStaticMethButtonContentGrid = new Grid();
+                leftStaticMethButtonContentGrid.Children.Add(new TextBlock { Foreground = new SolidColorBrush(Color.FromRgb(40, 80, 252)), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 32, 0), Text = "static" });
+                leftStaticMethButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "Meth()" });
+                uIClass.leftStaticMethButton = new Button { Name = "leftStaticMeth", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(65, 89, 196)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(-30, 73, 370, 21), Content = leftStaticMethButtonContentGrid };
+                if (dt.leftStaticMethDataClassCheckBox != true) { uIClass.leftStaticMethButton.Visibility = Visibility.Collapsed; }
+                uIClass.leftStaticMethButton.GotFocus += ChildrenGotFocus;
+                uIClass.leftStaticMethButton.Click += OpenHideRichTextBoxesMethod;
+                uIClass.leftStaticMethRichTextBox = new RichTextBox { Name = "leftStaticMethRichTextBox", Width = 600, Height = 500, FontSize = 12, AcceptsTab = true, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(-630, -50, 430, -588), Visibility = Visibility.Collapsed, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+                uIClass.leftStaticMethRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
+                uIClass.leftStaticMethRichTextBox.GotFocus += ChildrenGotFocus;
+                uIClass.leftStaticMethRichTextBox.LostFocus += SaveRichTextBoxLostFocus;
+
+                // Adding elements to classGrid
+                uIClass.classGrid.Children.Add(uIClass.classBorderWhite);
+                uIClass.classGrid.Children.Add(uIClass.classDescriptionButton);
+                uIClass.classGrid.Children.Add(uIClass.classNameTextBlock);
+                uIClass.classGrid.Children.Add(uIClass.classDescriptionTextBox);
+                uIClass.classGrid.Children.Add(uIClass.rightACheckBox);
+                uIClass.classGrid.Children.Add(uIClass.rightAButton);
+                uIClass.classGrid.Children.Add(uIClass.rightARichTextBox);
+                uIClass.classGrid.Children.Add(uIClass.rightStaticACheckBox);
+                uIClass.classGrid.Children.Add(uIClass.rightStaticAButton);
+                uIClass.classGrid.Children.Add(uIClass.rightStaticARichTextBox);
+                uIClass.classGrid.Children.Add(uIClass.rightConstrCheckBox);
+                uIClass.classGrid.Children.Add(uIClass.rightConstrButton);
+                uIClass.classGrid.Children.Add(uIClass.rightConstrRichTextBox);
+                uIClass.classGrid.Children.Add(uIClass.rightMethCheckBox);
+                uIClass.classGrid.Children.Add(uIClass.rightMethButton);
+                uIClass.classGrid.Children.Add(uIClass.rightMethRichTextBox);
+                uIClass.classGrid.Children.Add(uIClass.rightStaticMethCheckBox);
+                uIClass.classGrid.Children.Add(uIClass.rightStaticMethButton);
+                uIClass.classGrid.Children.Add(uIClass.rightStaticMethRichTextBox);
+                uIClass.classGrid.Children.Add(uIClass.rightMessageCheckBox);
+                uIClass.classGrid.Children.Add(uIClass.rightMessageButton);
+                uIClass.classGrid.Children.Add(uIClass.rightMessageRichTextBox);
+                uIClass.classGrid.Children.Add(uIClass.leftACheckBox);
+                uIClass.classGrid.Children.Add(uIClass.leftAButton);
+                uIClass.classGrid.Children.Add(uIClass.leftARichTextBox);
+                uIClass.classGrid.Children.Add(uIClass.leftMethCheckBox);
+                uIClass.classGrid.Children.Add(uIClass.leftMethButton);
+                uIClass.classGrid.Children.Add(uIClass.leftMethRichTextBox);
+                uIClass.classGrid.Children.Add(uIClass.leftStaticMethCheckBox);
+                uIClass.classGrid.Children.Add(uIClass.leftStaticMethButton);
+                uIClass.classGrid.Children.Add(uIClass.leftStaticMethRichTextBox);
+                bigCanvas.Children.Add(uIClass.classGrid);
+                Canvas.SetLeft(uIClass.classGrid, dt.canvasPointClass.X);
+                Canvas.SetTop(uIClass.classGrid, dt.canvasPointClass.Y);
+
+                List<string> allClasses = new List<string>(); // Список всех путей ко всем классом текущего проекта
+                List<string> allDirectories = Directory.GetDirectories(currentProgramDirectory + "Classes\\").ToList();
+                foreach (string s in allDirectories)
                 {
-                    //___CREATE UIClass OBJECT___
-
-                    UIClass uIClass = new UIClass();
-
-                    // classGrid
-                    uIClass.classGrid = new Grid { Name = NewClassNameTextBox.Text.ToString(), Tag = "", Width = 400, Height = 109, Background = new SolidColorBrush(Color.FromRgb(108, 108, 109)) };
-                    uIClass.classGrid.MouseLeftButtonDown += GridMouseLeftButtonDown;
-                    uIClass.classGrid.MouseLeftButtonUp += GridMouseLeftButtonUp;
-                    uIClass.classGrid.MouseMove += GridMouseMove;
-                    // classBorders
-                    uIClass.classBorderWhite = new Border { Name = "classBorderWhite", Width = 300, Height = 50, Background = new SolidColorBrush(Colors.White), CornerRadius = new CornerRadius(6), VerticalAlignment = VerticalAlignment.Center, BorderBrush = new SolidColorBrush(Color.FromRgb(65, 65, 65)), BorderThickness = new Thickness(2), Margin = new Thickness(0, 0, 0, 22) };
-                    // classDescriptionButton
-                    uIClass.classDescriptionButton = new Button { Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), Foreground = new SolidColorBrush(Color.FromRgb(43, 175, 62)), BorderBrush = new SolidColorBrush(Color.FromRgb(65, 65, 65)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(0, 0, 0, 88), Content = "???" };
-                    uIClass.classDescriptionButton.Click += OpenHideClassDescriptionTextBoxMethod;
-                    // 2 classTextboxes
-                    uIClass.classNameTextBlock = new TextBlock { Name = "classNameTextBlock", Width = 296, FontSize = 19, VerticalAlignment = VerticalAlignment.Center, TextAlignment = TextAlignment.Center, Foreground = new SolidColorBrush(Color.FromRgb(43, 145, 175)), Margin = new Thickness(0, 0, 0, 22), Text = dt.className };
-                    uIClass.classNameTextBlock.GotFocus += ChildrenGotFocus;
-                    uIClass.classDescriptionTextBox = new TextBox { Name = "classDescriptionTextBox", FontFamily = new FontFamily("Calibri"), Width = 296, Height = 140, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(52, -140, 52, 110), Visibility = Visibility.Collapsed, Text = dt.classDescription, AcceptsReturn = true };
-                    uIClass.classDescriptionTextBox.GotFocus += ChildrenGotFocus;
-                    uIClass.classDescriptionTextBox.LostFocus += LostFocusClassSaving;
-
-                    // Right
-
-                    // right A
-                    uIClass.rightACheckBox = new CheckBox { Name = "rightA", Width = 16, Height = 16, Margin = new Thickness(320, 0, 0, 88), IsChecked = dt.rightADataClassCheckBox, Opacity = 0.4 };
-                    uIClass.rightACheckBox.GotFocus += ChildrenGotFocus;
-                    uIClass.rightACheckBox.Click += OpenHideButtonsMethod;
-                    uIClass.rightACheckBox.Click += LostFocusClassSaving;
-                    Grid rightAButtonContentGrid = new Grid();
-                    rightAButtonContentGrid.Children.Add(new TextBlock { Foreground = new SolidColorBrush(Color.FromRgb(40, 80, 252)), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 10, 0), Text = "int" });
-                    rightAButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "a" });
-                    uIClass.rightAButton = new Button { Name = "rightA", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(370, 3, -30, 91), Content = rightAButtonContentGrid };
-                    if (dt.rightADataClassCheckBox != true) { uIClass.rightAButton.Visibility = Visibility.Collapsed; }
-                    uIClass.rightAButton.GotFocus += ChildrenGotFocus;
-                    uIClass.rightAButton.Click += OpenHideRichTextBoxesMethod;
-                    uIClass.rightARichTextBox = new RichTextBox { Name = "rightARichTextBox", Width = 400, Height = 260, FontSize = 12, AcceptsTab = true, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -120, -430, -278), Visibility = Visibility.Collapsed, FontStyle = FontStyles.Normal };
-                    uIClass.rightARichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
-                    uIClass.rightARichTextBox.GotFocus += ChildrenGotFocus;
-                    uIClass.rightARichTextBox.LostFocus += SaveRichTextBoxLostFocus;
-
-                    // right Static A
-                    uIClass.rightStaticACheckBox = new CheckBox { Name = "rightStaticA", Width = 16, Height = 16, Margin = new Thickness(320, 0, 0, 56), IsChecked = dt.rightStaticADataClassCheckBox, Opacity = 0.4 };
-                    uIClass.rightStaticACheckBox.GotFocus += ChildrenGotFocus;
-                    uIClass.rightStaticACheckBox.Click += OpenHideButtonsMethod;
-                    uIClass.rightStaticACheckBox.Click += LostFocusClassSaving;
-                    uIClass.rightStaticACheckBox.Click += LostFocusClassSaving;
-                    Grid rightStaticAButtonContentGrid = new Grid();
-                    rightStaticAButtonContentGrid.Children.Add(new TextBlock { Foreground = new SolidColorBrush(Color.FromRgb(40, 80, 252)), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 10, 0), Text = "static int" });
-                    rightStaticAButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "a" });
-                    uIClass.rightStaticAButton = new Button { Name = "rightStaticA", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(370, 19, -30, 75), Content = rightStaticAButtonContentGrid };
-                    if (dt.rightStaticADataClassCheckBox != true) { uIClass.rightStaticAButton.Visibility = Visibility.Collapsed; }
-                    uIClass.rightStaticAButton.GotFocus += ChildrenGotFocus;
-                    uIClass.rightStaticAButton.Click += OpenHideRichTextBoxesMethod;
-                    uIClass.rightStaticARichTextBox = new RichTextBox { Name = "rightStaticARichTextBox", Width = 400, Height = 260, FontSize = 12, AcceptsTab = true, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -110, -430, -300), Visibility = Visibility.Collapsed };
-                    uIClass.rightStaticARichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
-                    uIClass.rightStaticARichTextBox.GotFocus += ChildrenGotFocus;
-                    uIClass.rightStaticARichTextBox.LostFocus += SaveRichTextBoxLostFocus;
-
-                    // right Constr
-                    uIClass.rightConstrCheckBox = new CheckBox { Name = "rightConstr", Width = 16, Height = 16, Margin = new Thickness(320, 0, 0, 18), IsChecked = dt.rightConstrDataClassCheckBox, Opacity = 0.4 };
-                    uIClass.rightConstrCheckBox.GotFocus += ChildrenGotFocus;
-                    uIClass.rightConstrCheckBox.Click += OpenHideButtonsMethod;
-                    uIClass.rightConstrCheckBox.Click += LostFocusClassSaving;
-                    Grid rightConstrButtonContentGrid = new Grid();
-                    rightConstrButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "Constr()" });
-                    uIClass.rightConstrButton = new Button { Name = "rightConstr", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(370, 38, -30, 56), Content = rightConstrButtonContentGrid };
-                    if (dt.rightConstrDataClassCheckBox != true) { uIClass.rightConstrButton.Visibility = Visibility.Collapsed; }
-                    uIClass.rightConstrButton.GotFocus += ChildrenGotFocus;
-                    uIClass.rightConstrButton.Click += OpenHideRichTextBoxesMethod;
-                    uIClass.rightConstrRichTextBox = new RichTextBox { Name = "rightConstrRichTextBox", Width = 400, Height = 260, FontSize = 12, AcceptsTab = true, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -90, -430, -318), Visibility = Visibility.Collapsed };
-                    uIClass.rightConstrRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
-                    uIClass.rightConstrRichTextBox.GotFocus += ChildrenGotFocus;
-                    uIClass.rightConstrRichTextBox.LostFocus += SaveRichTextBoxLostFocus;
-
-                    // right Meth
-                    uIClass.rightMethCheckBox = new CheckBox { Name = "rightMeth", Width = 16, Height = 16, Margin = new Thickness(320, 20, 0, 0), IsChecked = dt.rightMethDataClassCheckBox, Opacity = 0.4 };
-                    uIClass.rightMethCheckBox.GotFocus += ChildrenGotFocus;
-                    uIClass.rightMethCheckBox.Click += OpenHideButtonsMethod;
-                    uIClass.rightMethCheckBox.Click += LostFocusClassSaving;
-                    Grid rightMethButtonContentGrid = new Grid();
-                    rightMethButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "Meth()" });
-                    uIClass.rightMethButton = new Button { Name = "rightMeth", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(370, 57, -30, 37), Content = rightMethButtonContentGrid };
-                    if (dt.rightMethDataClassCheckBox != true) { uIClass.rightMethButton.Visibility = Visibility.Collapsed; }
-                    uIClass.rightMethButton.GotFocus += ChildrenGotFocus;
-                    uIClass.rightMethButton.Click += OpenHideRichTextBoxesMethod;
-                    uIClass.rightMethRichTextBox = new RichTextBox { Name = "rightMethRichTextBox", Width = 400, Height = 260, FontSize = 12, AcceptsTab = true, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -66, -430, -332), Visibility = Visibility.Collapsed };
-                    uIClass.rightMethRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
-                    uIClass.rightMethRichTextBox.GotFocus += ChildrenGotFocus;
-                    uIClass.rightMethRichTextBox.LostFocus += SaveRichTextBoxLostFocus;
-
-                    // right StaticMeth
-                    uIClass.rightStaticMethCheckBox = new CheckBox { Name = "rightStaticMeth", Width = 16, Height = 16, Margin = new Thickness(320, 52, 0, 0), IsChecked = dt.rightStaticMethDataClassCheckBox, Opacity = 0.4 };
-                    uIClass.rightStaticMethCheckBox.GotFocus += ChildrenGotFocus;
-                    uIClass.rightStaticMethCheckBox.Click += OpenHideButtonsMethod;
-                    uIClass.rightStaticMethCheckBox.Click += LostFocusClassSaving;
-                    Grid rightStaticMethButtonContentGrid = new Grid();
-                    rightStaticMethButtonContentGrid.Children.Add(new TextBlock { Foreground = new SolidColorBrush(Color.FromRgb(40, 80, 252)), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 32, 0), Text = "static" });
-                    rightStaticMethButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "Meth()" });
-                    uIClass.rightStaticMethButton = new Button { Name = "rightStaticMeth", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(370, 73, -30, 21), Content = rightStaticMethButtonContentGrid };
-                    if (dt.rightStaticMethDataClassCheckBox != true) { uIClass.rightStaticMethButton.Visibility = Visibility.Collapsed; }
-                    uIClass.rightStaticMethButton.GotFocus += ChildrenGotFocus;
-                    uIClass.rightStaticMethButton.Click += OpenHideRichTextBoxesMethod;
-                    uIClass.rightStaticMethRichTextBox = new RichTextBox { Name = "rightStaticMethRichTextBox", Width = 400, Height = 260, FontSize = 12, AcceptsTab = true, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -50, -430, -348), Visibility = Visibility.Collapsed };
-                    uIClass.rightStaticMethRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
-                    uIClass.rightStaticMethRichTextBox.GotFocus += ChildrenGotFocus;
-                    uIClass.rightStaticMethRichTextBox.LostFocus += SaveRichTextBoxLostFocus;
-
-                    // right Message
-                    uIClass.rightMessageCheckBox = new CheckBox { Name = "rightMessage", Width = 16, Height = 16, Margin = new Thickness(320, 90, 0, 0), IsChecked = dt.rightMessageDataClassCheckBox, Opacity = 0.4 };
-                    uIClass.rightMessageCheckBox.GotFocus += ChildrenGotFocus;
-                    uIClass.rightMessageCheckBox.Click += OpenHideButtonsMethod;
-                    uIClass.rightMessageCheckBox.Click += LostFocusClassSaving;
-                    Grid rightMessageButtonContentGrid = new Grid();
-                    rightMessageButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "Message()" });
-                    uIClass.rightMessageButton = new Button { Name = "rightMessage", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(43, 175, 62)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(370, 92, -30, 2), Content = rightMessageButtonContentGrid };
-                    if (dt.rightMessageDataClassCheckBox != true) { uIClass.rightMessageButton.Visibility = Visibility.Collapsed; }
-                    uIClass.rightMessageButton.GotFocus += ChildrenGotFocus;
-                    uIClass.rightMessageButton.Click += OpenHideRichTextBoxesMethod;
-                    uIClass.rightMessageRichTextBox = new RichTextBox { Name = "rightMessageRichTextBox", Width = 400, Height = 260, FontSize = 12, AcceptsTab = true, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(430, -30, -430, -366), Visibility = Visibility.Collapsed };
-                    uIClass.rightMessageRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
-                    uIClass.rightMessageRichTextBox.GotFocus += ChildrenGotFocus;
-                    uIClass.rightMessageRichTextBox.LostFocus += SaveRichTextBoxLostFocus;
-
-                    // Left
-
-                    // left A
-                    uIClass.leftACheckBox = new CheckBox { Name = "leftA", Width = 16, Height = 16, Margin = new Thickness(0, 0, 320, 88), IsChecked = dt.leftADataClassCheckBox, Opacity = 0.4 };
-                    uIClass.leftACheckBox.GotFocus += ChildrenGotFocus;
-                    uIClass.leftACheckBox.Click += OpenHideButtonsMethod;
-                    uIClass.leftACheckBox.Click += LostFocusClassSaving;
-                    Grid leftAButtonContentGrid = new Grid();
-                    leftAButtonContentGrid.Children.Add(new TextBlock { Foreground = new SolidColorBrush(Color.FromRgb(40, 80, 252)), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 10, 0), Text = "int" });
-                    leftAButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "a" });
-                    uIClass.leftAButton = new Button { Name = "leftA", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(65, 89, 196)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(-30, 3, 370, 91), Content = leftAButtonContentGrid };
-                    if (dt.leftADataClassCheckBox != true) { uIClass.leftAButton.Visibility = Visibility.Collapsed; }
-                    uIClass.leftAButton.GotFocus += ChildrenGotFocus;
-                    uIClass.leftAButton.Click += OpenHideRichTextBoxesMethod;
-                    uIClass.leftARichTextBox = new RichTextBox { Name = "leftARichTextBox", Width = 400, Height = 260, FontSize = 12, AcceptsTab = true, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(-430, -120, 430, -278), Visibility = Visibility.Collapsed };
-                    uIClass.leftARichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
-                    uIClass.leftARichTextBox.GotFocus += ChildrenGotFocus;
-                    uIClass.leftARichTextBox.LostFocus += SaveRichTextBoxLostFocus;
-
-                    // left Meth
-                    uIClass.leftMethCheckBox = new CheckBox { Name = "leftMeth", Width = 16, Height = 16, Margin = new Thickness(0, 20, 320, 0), IsChecked = dt.leftMethDataClassCheckBox, Opacity = 0.4 };
-                    uIClass.leftMethCheckBox.GotFocus += ChildrenGotFocus;
-                    uIClass.leftMethCheckBox.Click += OpenHideButtonsMethod;
-                    uIClass.leftMethCheckBox.Click += LostFocusClassSaving;
-                    Grid leftMethButtonContentGrid = new Grid();
-                    leftMethButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "Meth()" });
-                    uIClass.leftMethButton = new Button { Name = "leftMeth", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(65, 89, 196)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(-30, 57, 370, 37), Content = leftMethButtonContentGrid };
-                    if (dt.leftMethDataClassCheckBox != true) { uIClass.leftMethButton.Visibility = Visibility.Collapsed; }
-                    uIClass.leftMethButton.GotFocus += ChildrenGotFocus;
-                    uIClass.leftMethButton.Click += OpenHideRichTextBoxesMethod;
-                    uIClass.leftMethRichTextBox = new RichTextBox { Name = "leftMethRichTextBox", Width = 400, Height = 260, FontSize = 12, AcceptsTab = true, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(-430, -66, 430, -332), Visibility = Visibility.Collapsed };
-                    uIClass.leftMethRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
-                    uIClass.leftMethRichTextBox.GotFocus += ChildrenGotFocus;
-                    uIClass.leftMethRichTextBox.LostFocus += SaveRichTextBoxLostFocus;
-
-                    // left Static Meth
-                    uIClass.leftStaticMethCheckBox = new CheckBox { Name = "leftStaticMeth", Width = 16, Height = 16, Margin = new Thickness(0, 52, 320, 0), IsChecked = dt.leftStaticMethDataClassCheckBox, Opacity = 0.4 };
-                    uIClass.leftStaticMethCheckBox.GotFocus += ChildrenGotFocus;
-                    uIClass.leftStaticMethCheckBox.Click += OpenHideButtonsMethod;
-                    uIClass.leftStaticMethCheckBox.Click += LostFocusClassSaving;
-                    Grid leftStaticMethButtonContentGrid = new Grid();
-                    leftStaticMethButtonContentGrid.Children.Add(new TextBlock { Foreground = new SolidColorBrush(Color.FromRgb(40, 80, 252)), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 32, 0), Text = "static" });
-                    leftStaticMethButtonContentGrid.Children.Add(new TextBlock { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Text = "Meth()" });
-                    uIClass.leftStaticMethButton = new Button { Name = "leftStaticMeth", Width = 60, Height = 16, Background = new SolidColorBrush(Colors.White), BorderBrush = new SolidColorBrush(Color.FromRgb(65, 89, 196)), VerticalAlignment = VerticalAlignment.Center, BorderThickness = new Thickness(2), Margin = new Thickness(-30, 73, 370, 21), Content = leftStaticMethButtonContentGrid };
-                    if (dt.leftStaticMethDataClassCheckBox != true) { uIClass.leftStaticMethButton.Visibility = Visibility.Collapsed; }
-                    uIClass.leftStaticMethButton.GotFocus += ChildrenGotFocus;
-                    uIClass.leftStaticMethButton.Click += OpenHideRichTextBoxesMethod;
-                    uIClass.leftStaticMethRichTextBox = new RichTextBox { Name = "leftStaticMethRichTextBox", Width = 400, Height = 260, FontSize = 12, AcceptsTab = true, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Colors.Black), BorderBrush = new SolidColorBrush(Color.FromRgb(121, 120, 120)), BorderThickness = new Thickness(1), Margin = new Thickness(-430, -50, 430, -348), Visibility = Visibility.Collapsed };
-                    uIClass.leftStaticMethRichTextBox.SetValue(Paragraph.LineHeightProperty, 0.1);
-                    uIClass.leftStaticMethRichTextBox.GotFocus += ChildrenGotFocus;
-                    uIClass.leftStaticMethRichTextBox.LostFocus += SaveRichTextBoxLostFocus;
-
-                    // Adding elements to classGrid
-                    uIClass.classGrid.Children.Add(uIClass.classBorderWhite);
-                    uIClass.classGrid.Children.Add(uIClass.classDescriptionButton);
-                    uIClass.classGrid.Children.Add(uIClass.classNameTextBlock);
-                    uIClass.classGrid.Children.Add(uIClass.classDescriptionTextBox);
-                    uIClass.classGrid.Children.Add(uIClass.rightACheckBox);
-                    uIClass.classGrid.Children.Add(uIClass.rightAButton);
-                    uIClass.classGrid.Children.Add(uIClass.rightARichTextBox);
-                    uIClass.classGrid.Children.Add(uIClass.rightStaticACheckBox);
-                    uIClass.classGrid.Children.Add(uIClass.rightStaticAButton);
-                    uIClass.classGrid.Children.Add(uIClass.rightStaticARichTextBox);
-                    uIClass.classGrid.Children.Add(uIClass.rightConstrCheckBox);
-                    uIClass.classGrid.Children.Add(uIClass.rightConstrButton);
-                    uIClass.classGrid.Children.Add(uIClass.rightConstrRichTextBox);
-                    uIClass.classGrid.Children.Add(uIClass.rightMethCheckBox);
-                    uIClass.classGrid.Children.Add(uIClass.rightMethButton);
-                    uIClass.classGrid.Children.Add(uIClass.rightMethRichTextBox);
-                    uIClass.classGrid.Children.Add(uIClass.rightStaticMethCheckBox);
-                    uIClass.classGrid.Children.Add(uIClass.rightStaticMethButton);
-                    uIClass.classGrid.Children.Add(uIClass.rightStaticMethRichTextBox);
-                    uIClass.classGrid.Children.Add(uIClass.rightMessageCheckBox);
-                    uIClass.classGrid.Children.Add(uIClass.rightMessageButton);
-                    uIClass.classGrid.Children.Add(uIClass.rightMessageRichTextBox);
-                    uIClass.classGrid.Children.Add(uIClass.leftACheckBox);
-                    uIClass.classGrid.Children.Add(uIClass.leftAButton);
-                    uIClass.classGrid.Children.Add(uIClass.leftARichTextBox);
-                    uIClass.classGrid.Children.Add(uIClass.leftMethCheckBox);
-                    uIClass.classGrid.Children.Add(uIClass.leftMethButton);
-                    uIClass.classGrid.Children.Add(uIClass.leftMethRichTextBox);
-                    uIClass.classGrid.Children.Add(uIClass.leftStaticMethCheckBox);
-                    uIClass.classGrid.Children.Add(uIClass.leftStaticMethButton);
-                    uIClass.classGrid.Children.Add(uIClass.leftStaticMethRichTextBox);
-                    bigCanvas.Children.Add(uIClass.classGrid);
-                    Canvas.SetLeft(uIClass.classGrid, dt.canvasPointClass.X);
-                    Canvas.SetTop(uIClass.classGrid, dt.canvasPointClass.Y);
-
-                    List<string> allClasses = new List<string>(); // Список всех путей ко всем классом текущего проекта
-                    List<string> allDirectories = Directory.GetDirectories(currentProgramDirectory + "Classes\\").ToList();
-                    foreach (string s in allDirectories)
+                    string[] files = Directory.GetFiles(s);
+                    foreach (string f in files)
                     {
-                        string[] files = Directory.GetFiles(s);
-                        foreach (string f in files)
-                        {
-                            if (!f.Contains("RichTextBox")) { allClasses.Add(f); }
-                        }
+                        if (!f.Contains("RichTextBox")) { allClasses.Add(f); }
                     }
+                }
 
-                    foreach (string s in allClasses) // Загрузка положения родителя на холсте, чтобы нарисовать линию от дочернего класса
+                foreach (string s in allClasses) // Загрузка положения родителя на холсте, чтобы нарисовать линию от дочернего класса
+                {
+                    if (s == currentProgramDirectory + "Classes\\" + dt.parentClassNameForThis + "\\" + dt.parentClassNameForThis + ".json") // Находится файл с именем родительского класса
                     {
-                        if (s == currentProgramDirectory + "Classes\\" + dt.parentClassNameForThis + "\\" + dt.parentClassNameForThis + ".json") // Находится файл с именем родительского класса
+                        using (FileStream fs = new FileStream(s, FileMode.Open))
                         {
-                            using (FileStream fs = new FileStream(s, FileMode.Open))
+                            DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(DataClass));
+                            try
                             {
-                                DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(DataClass));
-                                try
-                                {
-                                    DataClass parentClass = (DataClass)jsonSerializer.ReadObject(fs); // Загружается файл родительского класса
-                                    Line line = new Line { Name = dt.className, X1 = parentClass.canvasPointClass.X + 200, Y1 = parentClass.canvasPointClass.Y + 109, X2 = dt.canvasPointClass.X + 200, Y2 = dt.canvasPointClass.Y, Fill = new SolidColorBrush(Colors.Yellow), Stroke = new SolidColorBrush(Color.FromRgb(253, 221, 4)), StrokeThickness = 4 };
-                                    bigCanvas.Children.Add(line);
-                                }
-                                catch (Exception ex)
-                                {
-                                    MessageBox.Show("Проблемы с файлом: " + s + "    " + ex.Message);
-                                }
+                                DataClass parentClass = (DataClass)jsonSerializer.ReadObject(fs); // Загружается файл родительского класса
+                                Line line = new Line { Name = dt.className, X1 = parentClass.canvasPointClass.X + 200, Y1 = parentClass.canvasPointClass.Y + 109, X2 = dt.canvasPointClass.X + 200, Y2 = dt.canvasPointClass.Y, Fill = new SolidColorBrush(Colors.Yellow), Stroke = new SolidColorBrush(Color.FromRgb(253, 221, 4)), StrokeThickness = 4 };
+                                bigCanvas.Children.Add(line);
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("Проблемы с файлом: " + s + "    " + ex.Message);
                             }
                         }
                     }
                 }
-                NewClassNameTextBox.Text = "NewClassName";
+            }
+            NewClassNameTextBox.Text = "NewClassName";
         }
+
+
+
+
+
+
 
         // Удаление класса по его имени
         private void DeleteClass(object sender, RoutedEventArgs e)
@@ -635,7 +641,7 @@ namespace Unity_Class_Tree
                     {
                         Directory.CreateDirectory(currentProgramDirectory + "Classes\\" + ((sender as Button).Parent as Grid).Name);
                     }
-                    using (FileStream fs = new FileStream(currentProgramDirectory + "Classes\\"+ ((sender as Button).Parent as Grid).Name + "\\" + r.Name + ".json", FileMode.Create))
+                    using (FileStream fs = new FileStream(currentProgramDirectory + "Classes\\" + ((sender as Button).Parent as Grid).Name + "\\" + r.Name + ".json", FileMode.Create))
                     {
                         int inlinesCount = 0;
                         for (int a = 0; a < r.Document.Blocks.Count; a++)
@@ -841,7 +847,6 @@ namespace Unity_Class_Tree
         }
         private void canvas_MouseMove(object sender, MouseEventArgs e) // Само перемещение холста (canvas) по ScrollViewer
         {
-
             if (GetMouseCanvas)
             {
                 Point mousePosCanvasNew = e.GetPosition(W1);
@@ -889,7 +894,7 @@ namespace Unity_Class_Tree
                         int a = Convert.ToInt32(rtb.Selection.GetPropertyValue(TextElement.FontSizeProperty));
                         rtb.Selection.ApplyPropertyValue(FontSizeProperty, (++a).ToString());
                     }
-                    catch(Exception) { }
+                    catch (Exception) { }
                 }
                 else if ((sender as Button).Name == "Minus")
                 {
@@ -1058,6 +1063,13 @@ namespace Unity_Class_Tree
                 DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(double));
                 jsonSerializer.WriteObject(fs, canvasSize);
             }
+        }
+
+        // Запрет прокрутки канваса колесом мыши при прокрутке на любом его дочернем элементе, в том числе и на RichTextBox-ах, когда прокручиваемый текст на них достигнет конца или начала
+        private void ScrollViewer1_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (e.OriginalSource.GetType().ToString() == "System.Windows.Controls.Canvas") { e.Handled = true; }
+            if (e.OriginalSource.GetType().ToString() != "System.Windows.Controls.Canvas") { ScrollViewer1.ScrollToVerticalOffset(ScrollViewer1.ContentVerticalOffset); }
         }
     }
 }

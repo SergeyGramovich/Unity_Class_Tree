@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29324.140
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity_Class_Tree", "Unity_Class_Tree\Unity_Class_Tree.csproj", "{7C2C50A8-7E35-404D-8AC9-A8CA559FFF78}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Unity Class Tree", "Unity Class Tree\Unity Class Tree.vdproj", "{6F42F2CD-EF5F-40F1-B69A-4E221825CE6F}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Unity Class Tree", "Unity Class Tree\Unity Class Tree.vdproj", "{052D347E-8EA4-417C-A571-693956E249C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,8 +17,8 @@ Global
 		{7C2C50A8-7E35-404D-8AC9-A8CA559FFF78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C2C50A8-7E35-404D-8AC9-A8CA559FFF78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C2C50A8-7E35-404D-8AC9-A8CA559FFF78}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6F42F2CD-EF5F-40F1-B69A-4E221825CE6F}.Debug|Any CPU.ActiveCfg = Debug
-		{6F42F2CD-EF5F-40F1-B69A-4E221825CE6F}.Release|Any CPU.ActiveCfg = Release
+		{052D347E-8EA4-417C-A571-693956E249C8}.Debug|Any CPU.ActiveCfg = Debug
+		{052D347E-8EA4-417C-A571-693956E249C8}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
