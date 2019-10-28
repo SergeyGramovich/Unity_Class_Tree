@@ -433,13 +433,6 @@ namespace Unity_Class_Tree
             }
             NewClassNameTextBox.Text = "NewClassName";
         }
-
-
-
-
-
-
-
         // Удаление класса по его имени
         private void DeleteClass(object sender, RoutedEventArgs e)
         {
@@ -759,6 +752,7 @@ namespace Unity_Class_Tree
                             }
                         }
                     }
+
                     if (ExampleClass.parentClassNameForThis != null) // Если у перемещаемого класса в его свойстве parentClassNameForThis указан родитель
                     {
                         foreach (string s in allClasses) // Тогда найти этого родителя, а у него найти его координаты
@@ -770,9 +764,9 @@ namespace Unity_Class_Tree
                                     try
                                     {
                                         DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(DataClass));
-                                        ExampleClass = (DataClass)jsonSerializer.ReadObject(fs);
-                                        TakeClassGrid.Tag = ExampleClass.className;
-                                        Point ParentPoint = ExampleClass.canvasPointClass;
+                                        DataClass ParentClass = (DataClass)jsonSerializer.ReadObject(fs);
+                                        TakeClassGrid.Tag = ParentClass.className;
+                                        Point ParentPoint = ParentClass.canvasPointClass;
                                         Point ChildPoint = new Point((double)TakeClassGrid.GetValue(Canvas.LeftProperty), (double)TakeClassGrid.GetValue(Canvas.TopProperty));
                                         Line[] lines = bigCanvas.Children.OfType<Line>().ToArray();
                                         foreach (Line l in lines) // Постоянно удалять старые линии
